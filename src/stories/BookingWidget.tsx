@@ -348,7 +348,7 @@ export default function BookingWidget() {
         </div>
         <div className="flex flex-row gap-1 items-center">
             <DatePickerInput
-                label="departure date"
+                label="Departure date"
                 placeholder="Pick Date"
                 value={value}
                 onChange={setValue}
@@ -358,7 +358,7 @@ export default function BookingWidget() {
                 styles={datePickerStyles}
             />
             <DatePickerInput
-                label="destination date"
+                label="Destination date"
                 placeholder="Pick Date"
                 value={destinationTime}
                 onChange={setDestinationTime}
@@ -369,7 +369,30 @@ export default function BookingWidget() {
             />
         </div>
         <div className="self-end">
-            <Button variant="filled" color="gray">Search</Button>
+            <Button
+                h={56}
+                miw={170}
+                radius={0}
+                styles={{
+                    root: {
+                        background: "#0E636B",
+                        border: "1px solid #0E636B",
+                        color: "#fff",
+                        fontSize: 15,
+                        fontWeight: 600,
+                        letterSpacing: "0.4px",
+                        textTransform: "uppercase",
+                        transition: "all .2s",
+
+                        "&:hover": {
+                            background: "#14808A",
+                            borderColor: "#14808A",
+                        },
+                    },
+                }}
+            >
+                Search Flights
+            </Button>
         </div>
     </div>
 }
