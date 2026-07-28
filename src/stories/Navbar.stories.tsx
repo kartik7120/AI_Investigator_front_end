@@ -3,6 +3,9 @@ import Navbar from "../components/navbar";
 import { MantineProvider } from '@mantine/core';
 import '../tailwind.css';
 import '@mantine/core/styles.css';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const meta: Meta<typeof Navbar> = {
     component: Navbar,
@@ -11,9 +14,11 @@ const meta: Meta<typeof Navbar> = {
     },
     decorators: [
         (Story) => (
-            <MantineProvider>
-                <Story />
-            </MantineProvider>
+            <QueryClientProvider client={queryClient}>
+                <MantineProvider>
+                    <Story />
+                </MantineProvider>
+            </QueryClientProvider>
         )
     ]
 }

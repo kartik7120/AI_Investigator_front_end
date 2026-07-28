@@ -3,6 +3,9 @@ import BookingWidget from "./BookingWidget";
 import { MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const meta = {
     component: BookingWidget,
@@ -12,9 +15,11 @@ const meta = {
     },
     decorators: [
         (Story) => (
-            <MantineProvider>
-                <Story />
-            </MantineProvider>
+            <QueryClientProvider client={queryClient}>
+                <MantineProvider>
+                    <Story />
+                </MantineProvider>
+            </QueryClientProvider>
         )
     ]
 
