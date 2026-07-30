@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Input } from "@mantine/core";
 import { Mail, ShieldAlert } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import loginImage from "../assets/Static_login_model_image.png";
 
 export const APIGATEWAY_BASE_URL_DEV = import.meta.env.VITE_APIGATEWAY_BASE_URL_DEV;
 
@@ -29,7 +30,7 @@ async function CheckIfUserExistsQuery(email: string) {
 
 async function SignupQuery(email: string, password: string) {
     try {
-        const queryURL = `${APIGATEWAY_BASE_URL_DEV}/signup`;
+        const queryURL = `${APIGATEWAY_BASE_URL_DEV}/register`;
         const response = await fetch(queryURL, {
             method: "POST",
             headers: {
@@ -37,6 +38,12 @@ async function SignupQuery(email: string, password: string) {
             },
             body: JSON.stringify({ email, password }),
         });
+
+        console.log(response)
+
+        if (response.ok) {
+            console.log(`response is ok`)
+        }
 
         return await response.json();
     } catch (error) {
@@ -110,7 +117,12 @@ export default function Navbar() {
         mutate: SignUpMutate
     } = useMutation({
         mutationFn: ({ email, password }: { email: string, password: string }) => SignupQuery(email, password),
-        mutationKey: ["SignUp", email, password]
+        mutationKey: ["SignUp", email, password],
+        onError(error, variables, onMutateResult, context) {
+            console.log(`error calling the Sign Up function, ${error}`)
+
+            console.log(`onMutateResult : ${onMutateResult}`)
+        },
     })
 
     async function handleLogin(e: React.SubmitEvent<HTMLFormElement>) {
@@ -147,6 +159,14 @@ export default function Navbar() {
 
     }
 
+    if (isSignupSuccess || isLoginSuccess) {
+        close();
+        setPassword("");
+        setEmail("");
+        setConfirmPassword("");
+        setisNewUser(false);
+    }
+
     async function handleSignUp(e: React.SubmitEvent<HTMLFormElement>) {
 
         e.preventDefault()
@@ -158,109 +178,130 @@ export default function Navbar() {
 
     return (
         <nav>
-            <Modal opened={opened} onClose={close} title="Login/Signup" centered size="lg">
+            <Modal
+                opened={opened}
+                onClose={close}
+                centered
+                size="xl"
+                withCloseButton={false}
+                padding={0}
+                radius="lg"
+            >
+                <div className="flex flex-col md:flex-row min-h-[450px]">
+                    {/* Image */}
+                    <div className="md:w-2/5 bg-gray-100">
+                        <img
+                            src={loginImage}
+                            alt="Login"
+                            className="h-full w-full object-cover"
+                        />
+                    </div>
 
-                {
-                    !isNewUser ? (<div className="flex flex-row gap-4">
-                        <div>
-                            {/* Image section */}
-                            <img src={"../assets/Static_login_model_image"} alt="Static Login image" />
-                        </div>
-                        <div className="flex flex-col gap-4 flex-1">
-                            {/* Login form with username and password */}
+                    {/* Form */}
+                    <div className="md:w-3/5 p-8 flex flex-col justify-center">
+                        <h2 className="text-3xl font-bold mb-2">
+                            {isNewUser ? "Create Account" : "Welcome Back"}
+                        </h2>
+
+                        <p className="text-gray-500 mb-8">
+                            {isNewUser
+                                ? "Sign up to continue."
+                                : "Login to your account."}
+                        </p>
+
+                        <form
+                            className="flex flex-col gap-5"
+                            onSubmit={isNewUser ? handleSignUp : handleLogin}
+                        >
                             <Input
-                                placeholder="Enter your email"
-                                value={email}
-                                leftSection={<Mail />}
-                                onChange={(event) => setEmail(event.currentTarget.value)}
-                                rightSectionPointerEvents="all"
+                                placeholder="Email address"
                                 type="email"
-                                mt="md"
-                                rightSection={
-                                    email ? (
-                                        <Input.ClearButton
-                                            aria-label="Clear input"
-                                            onClick={() => setEmail('')}
-                                        />
-                                    ) : null
+                                value={email}
+                                leftSection={<Mail size={18} />}
+                                onChange={(e) => setEmail(e.currentTarget.value)}
+                                disabled={
+                                    isLoginLoading ||
+                                    isSignupLoading ||
+                                    isUserExistsLoading
                                 }
-                                disabled={isLoginLoading || isUserExistsLoading}
                             />
+
                             <PasswordInput
-                                placeholder="Enter your password"
+                                placeholder="Password"
                                 value={password}
-                                onChange={(event) => setPassword(event.currentTarget.value)}
-                                disabled={isLoginLoading || isUserExistsLoading}
+                                onChange={(e) => setPassword(e.currentTarget.value)}
+                                disabled={
+                                    isLoginLoading ||
+                                    isSignupLoading ||
+                                    isUserExistsLoading
+                                }
                             />
 
-                            <Button variant="filled" color="grey" loading={isLoginLoading || isUserExistsLoading} onClick={() => handleLogin}>Login</Button>
-                        </div>
-                        {
-                            isLoginError && <Alert variant="light" color="red" title="Alert title" icon={<ShieldAlert />}>
-                                {loginError?.message}
-                            </Alert>
-                        }
-                    </div>) : (
-                        <div>
-                            <div>
-                                {/* Image section */}
-                                <img src="../assets/Static_login_model_image" alt="Static Login image" />
-                            </div>
-                            <div className="flex flex-col gap-4 flex-1">
-                                <Input
-                                    placeholder="Enter your email"
-                                    value={email}
-                                    leftSection={<Mail />}
-                                    onChange={(event) => setEmail(event.currentTarget.value)}
-                                    rightSectionPointerEvents="all"
-                                    type="email"
-                                    mt="md"
-                                    rightSection={
-                                        email ? (
-                                            <Input.ClearButton
-                                                aria-label="Clear input"
-                                                onClick={() => setEmail('')}
-                                            />
-                                        ) : null
-                                    }
-
-                                    disabled={isSignupLoading}
-                                />
-
+                            {isNewUser && (
                                 <PasswordInput
-                                    placeholder="Enter your password"
-                                    value={password}
-                                    onChange={(event) => setPassword(event.currentTarget.value)}
-                                    disabled={isSignupLoading}
-                                />
-
-                                <PasswordInput
-                                    placeholder="Confirm your password"
+                                    placeholder="Confirm Password"
                                     value={confirmPassword}
-                                    onChange={(event) => setConfirmPassword(event.currentTarget.value)}
+                                    onChange={(e) =>
+                                        setConfirmPassword(e.currentTarget.value)
+                                    }
                                     disabled={isSignupLoading}
                                 />
+                            )}
 
-                                <Button variant="filled" color="grey" fullWidth loading={isSignupLoading} onClick={() => handleSignUp}>
-                                    Signup
-                                </Button>
-                            </div>
-                            <div className="flex flex-col items-center">
-                                {
-                                    isUserExistsError && <Alert variant="light" color="red" title="Alert title" icon={<ShieldAlert />}>
-                                        {userExistsError.message}
-                                    </Alert>
+                            <Button
+                                type="submit"
+                                color="dark"
+                                size="md"
+                                loading={
+                                    isLoginLoading ||
+                                    isSignupLoading ||
+                                    isUserExistsLoading
                                 }
-                                {
-                                    isSignupError && <Alert variant="light" color="red" title="Alert title" icon={<ShieldAlert />}>
-                                        {SignUpError.message}
-                                    </Alert>
-                                }
-                            </div>
-                        </div>
-                    )
-                }
+                                fullWidth
+                            >
+                                {isNewUser ? "Create Account" : "Login"}
+                            </Button>
 
+                            <Button
+                                variant="subtle"
+                                color="gray"
+                                type="button"
+                                onClick={() => setisNewUser((prev) => !prev)}
+                            >
+                                {isNewUser
+                                    ? "Already have an account? Login"
+                                    : "New here? Create an account"}
+                            </Button>
+
+                            {isLoginError && (
+                                <Alert
+                                    color="red"
+                                    icon={<ShieldAlert size={18} />}
+                                >
+                                    {loginError?.message}
+                                </Alert>
+                            )}
+
+                            {isSignupError && (
+                                <Alert
+                                    color="red"
+                                    icon={<ShieldAlert size={18} />}
+                                >
+                                    {SignUpError?.message}
+                                </Alert>
+                            )}
+
+                            {isUserExistsError && (
+                                <Alert
+                                    color="red"
+                                    icon={<ShieldAlert size={18} />}
+                                >
+                                    {userExistsError?.message}
+                                </Alert>
+                            )}
+                        </form>
+                    </div>
+                </div>
             </Modal>
 
             <div className="flex items-center justify-between">
