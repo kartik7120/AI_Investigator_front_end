@@ -1,17 +1,26 @@
 import { Alert, Button, Modal, PasswordInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@mantine/core";
 import { Mail, ShieldAlert } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import loginImage from "../assets/Static_login_model_image.png";
+import { useBearStore } from "../store/store";
+
+interface checkUserExistsResponse {
+    doesUserExist: boolean;
+}
+
+interface SignupResponse {
+    message: string;
+}
 
 export const APIGATEWAY_BASE_URL_DEV = import.meta.env.VITE_APIGATEWAY_BASE_URL_DEV;
 
 async function CheckIfUserExistsQuery(email: string) {
     try {
 
-        const queryURL = `${APIGATEWAY_BASE_URL_DEV}/checkUserExists?email=${email}`;
+        const queryURL = `${APIGATEWAY_BASE_URL_DEV}/checkUserExists?username=${email}`;
 
         const response = await fetch(queryURL, {
             method: "GET",
@@ -45,6 +54,12 @@ async function SignupQuery(email: string, password: string) {
             console.log(`response is ok`)
         }
 
+        if (response.ok === false) {
+            const errorData = await response.json();
+            console.error(`Error signing up the user: ${errorData.message}`);
+            throw new Error(errorData.message);
+        }
+
         return await response.json();
     } catch (error) {
         console.error("Error signing up the user : " + error)
@@ -59,15 +74,67 @@ async function LoginQuery(email: string, password: string) {
 
         const response = await fetch(queryURL, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ "username": email, password })
+            body: JSON.stringify({ email, password })
         })
 
-        return await response.json();
+        if (response.ok === false) {
+            const errorData = await response.text();
+            console.error(`Error logging in the user: ${errorData}`);
+            throw new Error(errorData);
+        }
+
     } catch (error) {
         console.error("Error Login in a user")
+        throw error;
+    }
+}
+
+async function LogoutQuery() {
+    try {
+        const queryURL = `${APIGATEWAY_BASE_URL_DEV}/logout`
+        const response = await fetch(queryURL, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if (response.ok === false) {
+            const errorData = await response.text();
+            console.error(`Error logging out the user: ${errorData}`);
+            throw new Error(errorData);
+        }
+
+    } catch (error) {
+        console.error("Error logging out a user")
+        throw error;
+    }
+}
+
+async function CheckIfTokenIsValidQuery() {
+    try {
+        const queryURL = `${APIGATEWAY_BASE_URL_DEV}/checkIfTokenValid`
+        const response = await fetch(queryURL, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if (response.ok === false) {
+            const errorData = await response.text();
+            console.error(`Error checking token validity: ${errorData}`);
+            throw new Error(errorData);
+        }
+
+    } catch (error) {
+        console.error("Error checking token validity")
         throw error;
     }
 }
@@ -81,23 +148,41 @@ export default function Navbar() {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [isNewUser, setisNewUser] = useState(false)
 
-    const [isLoading, setIsLoading] = useState(false);
 
     const {
-        data: userExistsData,
         isLoading: isUserExistsLoading,
         isError: isUserExistsError,
         refetch,
         error: userExistsError,
-        isSuccess: isUserExistsSuccess,
-    } = useQuery({
+    } = useQuery<checkUserExistsResponse>({
         queryKey: ['checkUserExists', email],
         queryFn: () => CheckIfUserExistsQuery(email),
         enabled: false
     })
 
     const {
-        data: loginData,
+        isLoading: isTokenValidLoading,
+        isError: isTokenValidError,
+        refetch: refetchTokenValidity,
+    } = useQuery({
+        queryKey: ['checkIfTokenValid'],
+        queryFn: () => CheckIfTokenIsValidQuery(),
+        enabled: false
+    })
+
+    const logoutMutation = useMutation({
+        mutationFn: () => LogoutQuery(),
+        mutationKey: ["Logout"],
+    })
+
+    function resetState() {
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setisNewUser(false);
+    }
+
+    const {
         isPending: isLoginLoading,
         isError: isLoginError,
         error: loginError,
@@ -105,11 +190,14 @@ export default function Navbar() {
         mutate,
     } = useMutation({
         mutationFn: ({ email, password }: { email: string; password: string }) => LoginQuery(email, password),
-        mutationKey: ["Login", email, password]
+        mutationKey: ["Login", email, password],
+        onSuccess(data, variables, context) {
+            console.log(`Login successful, data : ${JSON.stringify(data)}`)
+            // Set the Auth Token in HTTP Only Cookie
+        }
     })
 
     const {
-        data: Signup,
         isPending: isSignupLoading,
         isError: isSignupError,
         error: SignUpError,
@@ -123,7 +211,52 @@ export default function Navbar() {
 
             console.log(`onMutateResult : ${onMutateResult}`)
         },
+        onMutate(variables, context) {
+            if (variables.password !== confirmPassword) {
+                console.log(`Passwords do not match!`)
+                throw new Error("Passwords do not match!")
+            }
+        },
+        onSuccess(data, variables, context) {
+            console.log(`Sign Up successful, data : ${JSON.stringify(data)}`)
+
+        }
     })
+
+    useEffect(() => {
+        if (isSignupSuccess || isLoginSuccess) {
+            close();
+            setPassword("");
+            setEmail("");
+            setConfirmPassword("");
+            setisNewUser(false);
+            useBearStore.getState().setIsUserLoggedIn(true);
+            useBearStore.getState().setEmail(email);
+        }
+
+        // Check if the token is valid or not, if not then reset the state and close the modal
+
+        if (useBearStore.getState().isUserLoggedIn) {
+
+            refetchTokenValidity().then((response) => {
+                if (response.data === undefined) {
+                    console.log(`Token is not valid, resetting the state and closing the modal`)
+                    resetState();
+                    close();
+                    useBearStore.getState().setIsUserLoggedIn(false);
+                } else {
+                    console.log(`Token is valid, user is logged in`)
+                }
+            })
+        }
+
+
+        return () => {
+            resetState();
+        }
+    }, [isSignupSuccess, isLoginSuccess, useBearStore.getState().isUserLoggedIn]);
+
+
 
     async function handleLogin(e: React.SubmitEvent<HTMLFormElement>) {
 
@@ -138,7 +271,9 @@ export default function Navbar() {
 
         const userExists = await refetch();
 
-        if (userExists) {
+        userExists.data?.doesUserExist
+
+        if (userExists.data?.doesUserExist) {
             // User exists, proceed with login flow
 
             console.log("User exists, proceed with login flow");
@@ -159,14 +294,6 @@ export default function Navbar() {
 
     }
 
-    if (isSignupSuccess || isLoginSuccess) {
-        close();
-        setPassword("");
-        setEmail("");
-        setConfirmPassword("");
-        setisNewUser(false);
-    }
-
     async function handleSignUp(e: React.SubmitEvent<HTMLFormElement>) {
 
         e.preventDefault()
@@ -176,11 +303,21 @@ export default function Navbar() {
         })
     }
 
+    async function handleLogout() {
+        try {
+            await LogoutQuery();
+            useBearStore.getState().setIsUserLoggedIn(false);
+            console.log("User logged out successfully");
+        } catch (error) {
+            console.error("Error logging out the user: ", error);
+        }
+    }
+
     return (
         <nav>
             <Modal
                 opened={opened}
-                onClose={close}
+                onClose={() => { resetState(); close(); }}
                 centered
                 size="xl"
                 withCloseButton={false}
@@ -311,9 +448,15 @@ export default function Navbar() {
                     <Button variant="subtle" color="gray">Check-in</Button>
                 </div>
                 <div className="flex items-center justify-between">
-                    <Button variant="subtle" color="gray" onClick={open}>
-                        Login
-                    </Button>
+                    {useBearStore.getState().isUserLoggedIn ? (
+                        <Button variant="subtle" color="gray" onClick={open}>
+                            Logout
+                        </Button>
+                    ) : (
+                        <Button variant="subtle" color="gray" onClick={handleLogout}>
+                            Login
+                        </Button>
+                    )}
                 </div>
             </div>
         </nav>

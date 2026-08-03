@@ -14,11 +14,11 @@ const meta: Meta<typeof Navbar> = {
     },
     decorators: [
         (Story) => (
-            <QueryClientProvider client={queryClient}>
-                <MantineProvider>
+            <MantineProvider>
+                <QueryClientProvider client={queryClient}>
                     <Story />
-                </MantineProvider>
-            </QueryClientProvider>
+                </QueryClientProvider>
+            </MantineProvider>
         )
     ]
 }
