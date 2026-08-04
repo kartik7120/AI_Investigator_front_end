@@ -8,6 +8,9 @@ import '@mantine/core/styles.css';
 // ‼️ import notifications styles after core package styles
 import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
+import '@mantine/core/styles.css';
+// ‼️ import carousel styles after core package styles
+import '@mantine/carousel/styles.css';
 
 export const queryClient = new QueryClient();
 
