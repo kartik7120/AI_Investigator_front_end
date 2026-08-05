@@ -1,6 +1,6 @@
-import { Button, Select, Text } from "@mantine/core";
+import { Button, Select, Text, Title } from "@mantine/core";
 import { DatePickerInput } from '@mantine/dates';
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 interface DestinationSector {
     name: string;
@@ -188,7 +188,7 @@ const departureSector: DepartureSector[] = [
 const renderSectorOption = (sector: SectorSelectItem) => (
     <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-col *:gap-1">
-            <Text fw={600} size="sm" c="white">
+            <Text fw={600} size="sm" c="gray.5" >
                 {sector.label}
             </Text>
             <Text size="xs" c="gray.5">
@@ -201,198 +201,223 @@ const renderSectorOption = (sector: SectorSelectItem) => (
     </div>
 );
 
+const slogans = [
+    "Your journey begins here.",
+    "Where will you fly next?",
+    "Adventure is just a booking away.",
+    "Discover the world, one flight at a time.",
+    "Every destination starts with a ticket.",
+    "Travel farther. Experience more.",
+    "Find your perfect flight in seconds.",
+    "The sky isn't the limit—it's the beginning.",
+    "Book today. Explore tomorrow.",
+    "Your next adventure is waiting.",
+    "From takeoff to touchdown, we've got you covered.",
+    "Fly smarter. Travel happier.",
+];
+
 export default function BookingWidget() {
 
     const [value, setValue] = useState<string | null>(null);
     const [destinationTime, setDestinationTime] = useState<string | null>(null);
+    const slogan = useMemo(
+        () => slogans[Math.floor(Math.random() * slogans.length)],
+        []
+    );
 
-    return <div className="flex flex-row gap-2 items-center justify-center">
-        <div className="flex flex-row gap-1 items-center">
-            <Select
-                label={<Text fw={600} size="sm" c="dark">Departure sector</Text>}
-                placeholder="Pick value"
-                data={
-                    [
-                        ...departureSector.map((sector) => ({
-                            value: sector.code,
-                            label: `${sector.name}`,
-                            airport: sector.airport
-                        }))
-                    ]
-                }
-                defaultValue="DEL"
-                clearable
-                styles={{
-                    label: {
-                        color: "#d6d6d6",
-                        fontSize: 12,
-                        marginBottom: 6,
-                        fontWeight: 400,
-                        letterSpacing: "0.5px",
-                    },
+    return <div className="flex flex-col gap-10 w-full p-6 *:gap-6 bg-[#1c1c1c]">
 
-                    input: {
-                        backgroundColor: "#1c1c1c",
-                        color: "#fff",
-                        border: "1px solid #575757",
-                        borderRadius: 0,
-                        height: 56,
-                        fontSize: 16,
+        <Title h={1} mb={20} className="text-2xl md:text-3xl lg:text-4xl text-center font-bold">
+            {slogan}
+        </Title>
 
-                        "&::placeholder": {
-                            color: "#8c8c8c",
+        <div className="flex flex-row gap-2 items-center justify-center">
+            <div className="flex flex-row gap-1 items-center">
+                <Select
+                    label={<Text fw={600} size="sm">Departure sector</Text>}
+                    placeholder="Pick value"
+                    data={
+                        [
+                            ...departureSector.map((sector) => ({
+                                value: sector.code,
+                                label: `${sector.name}`,
+                                airport: sector.airport
+                            }))
+                        ]
+                    }
+                    defaultValue="DEL"
+                    clearable
+                    styles={{
+                        label: {
+                            color: "#d6d6d6",
+                            fontSize: 12,
+                            marginBottom: 6,
+                            fontWeight: 400,
+                            letterSpacing: "0.5px",
                         },
 
-                        "&:focus": {
-                            borderColor: "#8a8a8a",
-                        },
-                    },
-
-                    dropdown: {
-                        backgroundColor: "#1c1c1c",
-                        border: "1px solid #575757",
-                        borderRadius: 0,
-                    },
-
-                    option: {
-                        color: "#fff",
-                        fontSize: 15,
-
-                        "&[data-hovered]": {
-                            backgroundColor: "#2d2d2d",
-                        },
-
-                        "&[data-checked]": {
-                            backgroundColor: "#0057d9",
+                        input: {
+                            backgroundColor: "#1c1c1c",
                             color: "#fff",
-                        },
-                    },
+                            border: "1px solid #575757",
+                            borderRadius: 0,
+                            height: 56,
+                            fontSize: 16,
 
-                    section: {
-                        color: "#999",
-                    },
-                }}
-                renderOption={({ option }) => (
-                    renderSectorOption(option as SectorSelectItem)
-                )}
-            />
-            <Select
-                label={<Text fw={600} size="sm" c="dark">Destination sector</Text>}
-                placeholder="Pick value"
-                data={
-                    [
-                        ...destinationSectors.map((sector) => ({
-                            value: sector.code,
-                            label: `${sector.name}`,
-                            airport: sector.airport
-                        }))
-                    ]
-                }
-                defaultValue="DEL"
-                clearable
-                styles={{
-                    label: {
-                        color: "#d6d6d6",
-                        fontSize: 12,
-                        marginBottom: 6,
-                        fontWeight: 400,
-                        letterSpacing: "0.5px",
+                            "&::placeholder": {
+                                color: "#8c8c8c",
+                            },
 
-                    },
-
-                    input: {
-                        backgroundColor: "#1c1c1c",
-                        color: "#fff",
-                        border: "1px solid #575757",
-                        borderRadius: 0,
-                        height: 56,
-                        fontSize: 16,
-
-                        "&::placeholder": {
-                            color: "#8c8c8c",
+                            "&:focus": {
+                                borderColor: "#8a8a8a",
+                            },
                         },
 
-                        "&:focus": {
-                            borderColor: "#8a8a8a",
-                        },
-                    },
-
-                    dropdown: {
-                        backgroundColor: "#1c1c1c",
-                        border: "1px solid #575757",
-                        borderRadius: 0,
-                    },
-
-                    option: {
-                        color: "#fff",
-                        fontSize: 15,
-
-                        "&[data-hovered]": {
-                            backgroundColor: "#2d2d2d",
+                        dropdown: {
+                            backgroundColor: "#1c1c1c",
+                            border: "1px solid #575757",
+                            borderRadius: 0,
                         },
 
-                        "&[data-checked]": {
-                            backgroundColor: "#0057d9",
+                        option: {
                             color: "#fff",
-                        },
-                    },
+                            fontSize: 15,
 
-                    section: {
-                        color: "#999",
-                    },
-                }}
-                renderOption={({ option }) => (
-                    renderSectorOption(option as SectorSelectItem)
-                )}
-            />
-        </div>
-        <div className="flex flex-row gap-1 items-center">
-            <DatePickerInput
-                label={<Text fw={600} size="sm" c="dark">Departure date</Text>}
-                placeholder="Pick Date"
-                value={value}
-                onChange={setValue}
-                valueFormat="DD MMM YY"
-                minDate={new Date()}
-                maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
-                styles={datePickerStyles}
-            />
-            <DatePickerInput
-                label={<Text fw={600} size="sm" c="dark">Return date</Text>}
-                placeholder="Pick Date"
-                value={destinationTime}
-                onChange={setDestinationTime}
-                valueFormat="DD MMM YY"
-                minDate={new Date()}
-                maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
-                styles={datePickerStyles}
-            />
-        </div>
-        <div className="self-end">
-            <Button
-                h={56}
-                miw={170}
-                radius={0}
-                styles={{
-                    root: {
-                        background: "#0E636B",
-                        border: "1px solid #0E636B",
-                        color: "#fff",
-                        fontSize: 15,
-                        fontWeight: 600,
-                        letterSpacing: "0.4px",
-                        textTransform: "uppercase",
-                        transition: "all .2s",
+                            "&[data-hovered]": {
+                                backgroundColor: "#2d2d2d",
+                            },
 
-                        "&:hover": {
-                            background: "#14808A",
-                            borderColor: "#14808A",
+                            "&[data-checked]": {
+                                backgroundColor: "#0057d9",
+                                color: "#fff",
+                            },
                         },
-                    },
-                }}
-            >
-                Search Flights
-            </Button>
+
+                        section: {
+                            color: "#999",
+                        },
+                    }}
+                    renderOption={({ option }) => (
+                        renderSectorOption(option as SectorSelectItem)
+                    )}
+                />
+                <Select
+                    label={<Text fw={600} size="sm">Destination sector</Text>}
+                    placeholder="Pick value"
+                    data={
+                        [
+                            ...destinationSectors.map((sector) => ({
+                                value: sector.code,
+                                label: `${sector.name}`,
+                                airport: sector.airport
+                            }))
+                        ]
+                    }
+                    clearable
+                    styles={{
+                        label: {
+                            color: "#d6d6d6",
+                            fontSize: 12,
+                            marginBottom: 6,
+                            fontWeight: 400,
+                            letterSpacing: "0.5px",
+
+                        },
+
+                        input: {
+                            backgroundColor: "#1c1c1c",
+                            color: "#fff",
+                            border: "1px solid #575757",
+                            borderRadius: 0,
+                            height: 56,
+                            fontSize: 16,
+
+                            "&::placeholder": {
+                                color: "#8c8c8c",
+                            },
+
+                            "&:focus": {
+                                borderColor: "#8a8a8a",
+                            },
+                        },
+
+                        dropdown: {
+                            backgroundColor: "#1c1c1c",
+                            border: "1px solid #575757",
+                            borderRadius: 0,
+                        },
+
+                        option: {
+                            color: "#fff",
+                            fontSize: 15,
+
+                            "&[data-hovered]": {
+                                backgroundColor: "#2d2d2d",
+                            },
+
+                            "&[data-checked]": {
+                                backgroundColor: "#0057d9",
+                                color: "#fff",
+                            },
+                        },
+
+                        section: {
+                            color: "#999",
+                        },
+                    }}
+                    renderOption={({ option }) => (
+                        renderSectorOption(option as SectorSelectItem)
+                    )}
+                />
+            </div>
+            <div className="flex flex-row gap-1 items-center">
+                <DatePickerInput
+                    label={<Text fw={600} c={"dark"} size="sm">Departure date</Text>}
+                    placeholder="Pick Date"
+                    value={value}
+                    onChange={setValue}
+                    valueFormat="DD MMM YY"
+                    minDate={new Date()}
+                    maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
+                    styles={datePickerStyles}
+                />
+                <DatePickerInput
+                    label={<Text fw={600} c={"dark"} size="sm">Return date</Text>}
+                    placeholder="Pick Date"
+                    value={destinationTime}
+                    onChange={setDestinationTime}
+                    valueFormat="DD MMM YY"
+                    minDate={new Date()}
+                    maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
+                    styles={datePickerStyles}
+                />
+            </div>
+            <div className="self-end">
+                <Button
+                    h={56}
+                    miw={170}
+                    radius={0}
+                    styles={{
+                        root: {
+                            background: "#0E636B",
+                            border: "1px solid #0E636B",
+                            color: "#fff",
+                            fontSize: 15,
+                            fontWeight: 600,
+                            letterSpacing: "0.4px",
+                            textTransform: "uppercase",
+                            transition: "all .2s",
+
+                            "&:hover": {
+                                background: "#14808A",
+                                borderColor: "#14808A",
+                            },
+                        },
+                    }}
+                >
+                    Search Flights
+                </Button>
+            </div>
         </div>
     </div>
 }
