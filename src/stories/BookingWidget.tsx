@@ -209,7 +209,7 @@ export default function BookingWidget() {
     return <div className="flex flex-row gap-2 items-center justify-center">
         <div className="flex flex-row gap-1 items-center">
             <Select
-                label="Departure sector"
+                label={<Text fw={600} size="sm" c="dark">Departure sector</Text>}
                 placeholder="Pick value"
                 data={
                     [
@@ -277,7 +277,7 @@ export default function BookingWidget() {
                 )}
             />
             <Select
-                label="Destination sector"
+                label={<Text fw={600} size="sm" c="dark">Destination sector</Text>}
                 placeholder="Pick value"
                 data={
                     [
@@ -348,7 +348,7 @@ export default function BookingWidget() {
         </div>
         <div className="flex flex-row gap-1 items-center">
             <DatePickerInput
-                label="Departure date"
+                label={<Text fw={600} size="sm" c="dark">Departure date</Text>}
                 placeholder="Pick Date"
                 value={value}
                 onChange={setValue}
@@ -358,7 +358,7 @@ export default function BookingWidget() {
                 styles={datePickerStyles}
             />
             <DatePickerInput
-                label="Destination date"
+                label={<Text fw={600} size="sm" c="dark">Return date</Text>}
                 placeholder="Pick Date"
                 value={destinationTime}
                 onChange={setDestinationTime}

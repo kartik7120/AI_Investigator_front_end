@@ -49,7 +49,7 @@ export default function StatsSection() {
                         </Text>
                     </div>
 
-                    <div className="flex justify-end">
+                    {/* <div className="flex justify-end">
                         <ActionIcon
                             radius="xl"
                             size={70}
@@ -60,7 +60,7 @@ export default function StatsSection() {
                                 size={32} className="text-[#1D17C9]"
                             />
                         </ActionIcon>
-                    </div>
+                    </div> */}
                 </Paper>
 
                 {/* Right Grid */}
