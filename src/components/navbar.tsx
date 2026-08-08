@@ -315,150 +315,313 @@ export default function Navbar() {
 
     return (
         <nav>
-            <Modal
-                opened={opened}
-                onClose={() => { resetState(); close(); }}
-                centered
-                size="xl"
-                withCloseButton={false}
-                padding={0}
-                radius="lg"
-            >
-                <div className="flex flex-col md:flex-row min-h-[450px]">
-                    {/* Image */}
-                    <div className="md:w-2/5 bg-gray-100">
-                        <img
-                            src={loginImage}
-                            alt="Login"
-                            className="h-full w-full object-cover"
-                        />
-                    </div>
+            <>
+                <Modal
+                    opened={opened}
+                    onClose={() => {
+                        resetState();
+                        close();
+                    }}
+                    centered
+                    size="xl"
+                    withCloseButton={false}
+                    padding={0}
+                    radius="xl"
+                    overlayProps={{
+                        blur: 6,
+                        opacity: 0.45,
+                    }}
+                >
+                    <div className="flex min-h-[500px] flex-col overflow-hidden rounded-xl bg-white dark:bg-slate-900 md:flex-row">
 
-                    {/* Form */}
-                    <div className="md:w-3/5 p-8 flex flex-col justify-center">
-                        <h2 className="text-3xl font-bold mb-2">
-                            {isNewUser ? "Create Account" : "Welcome Back"}
-                        </h2>
-
-                        <p className="text-gray-500 mb-8">
-                            {isNewUser
-                                ? "Sign up to continue."
-                                : "Login to your account."}
-                        </p>
-
-                        <form
-                            className="flex flex-col gap-5"
-                            onSubmit={isNewUser ? handleSignUp : handleLogin}
-                        >
-                            <Input
-                                placeholder="Email address"
-                                type="email"
-                                value={email}
-                                leftSection={<Mail size={18} />}
-                                onChange={(e) => setEmail(e.currentTarget.value)}
-                                disabled={
-                                    isLoginLoading ||
-                                    isSignupLoading ||
-                                    isUserExistsLoading
-                                }
+                        {/* Left Image */}
+                        <div className="relative md:w-2/5">
+                            <img
+                                src={loginImage}
+                                alt="Login"
+                                className="h-full w-full object-cover"
                             />
 
-                            <PasswordInput
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.currentTarget.value)}
-                                disabled={
-                                    isLoginLoading ||
-                                    isSignupLoading ||
-                                    isUserExistsLoading
-                                }
-                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-                            {isNewUser && (
-                                <PasswordInput
-                                    placeholder="Confirm Password"
-                                    value={confirmPassword}
-                                    onChange={(e) =>
-                                        setConfirmPassword(e.currentTarget.value)
-                                    }
-                                    disabled={isSignupLoading}
-                                />
-                            )}
+                            <div className="absolute bottom-8 left-8 text-white">
+                                <h2 className="text-3xl font-bold">
+                                    Fly Smarter
+                                </h2>
 
-                            <Button
-                                type="submit"
-                                color="dark"
-                                size="md"
-                                loading={
-                                    isLoginLoading ||
-                                    isSignupLoading ||
-                                    isUserExistsLoading
-                                }
-                                fullWidth
-                            >
-                                {isNewUser ? "Create Account" : "Login"}
-                            </Button>
+                                <p className="mt-2 text-sm text-white/80">
+                                    Book, manage and investigate your trips.
+                                </p>
+                            </div>
+                        </div>
 
-                            <Button
-                                variant="subtle"
-                                color="gray"
-                                type="button"
-                                onClick={() => setisNewUser((prev) => !prev)}
-                            >
+                        {/* Right Form */}
+                        <div className="flex flex-1 flex-col justify-center p-10">
+
+                            <h2 className="text-3xl font-bold">
+                                {isNewUser ? "Create Account" : "Welcome Back"}
+                            </h2>
+
+                            <p className="mt-2 mb-8 text-sm text-slate-500 dark:text-slate-400">
                                 {isNewUser
-                                    ? "Already have an account? Login"
-                                    : "New here? Create an account"}
-                            </Button>
+                                    ? "Create your account to continue."
+                                    : "Sign in to continue your journey."}
+                            </p>
 
-                            {isLoginError && (
-                                <Alert
-                                    color="red"
-                                    icon={<ShieldAlert size={18} />}
-                                >
-                                    {loginError?.message}
-                                </Alert>
-                            )}
+                            <form
+                                className="space-y-5"
+                                onSubmit={isNewUser ? handleSignUp : handleLogin}
+                            >
+                                <Input
+                                    placeholder="Email Address"
+                                    type="email"
+                                    value={email}
+                                    leftSection={<Mail size={18} />}
+                                    onChange={(e) => setEmail(e.currentTarget.value)}
+                                    disabled={
+                                        isLoginLoading ||
+                                        isSignupLoading ||
+                                        isUserExistsLoading
+                                    }
+                                />
 
-                            {isSignupError && (
-                                <Alert
-                                    color="red"
-                                    icon={<ShieldAlert size={18} />}
-                                >
-                                    {SignUpError?.message}
-                                </Alert>
-                            )}
+                                <PasswordInput
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.currentTarget.value)}
+                                    disabled={
+                                        isLoginLoading ||
+                                        isSignupLoading ||
+                                        isUserExistsLoading
+                                    }
+                                />
 
-                            {isUserExistsError && (
-                                <Alert
-                                    color="red"
-                                    icon={<ShieldAlert size={18} />}
+                                {isNewUser && (
+                                    <PasswordInput
+                                        placeholder="Confirm Password"
+                                        value={confirmPassword}
+                                        onChange={(e) =>
+                                            setConfirmPassword(e.currentTarget.value)
+                                        }
+                                        disabled={isSignupLoading}
+                                    />
+                                )}
+
+                                <Button
+                                    fullWidth
+                                    size="md"
+                                    radius="xl"
+                                    variant="filled"
+                                    color="dark"
+                                    loading={
+                                        isLoginLoading ||
+                                        isSignupLoading ||
+                                        isUserExistsLoading
+                                    }
                                 >
-                                    {userExistsError?.message}
-                                </Alert>
-                            )}
-                        </form>
+                                    {isNewUser ? "Create Account" : "Login"}
+                                </Button>
+
+                                <Button
+                                    fullWidth
+                                    radius="xl"
+                                    variant="light"
+                                    color="gray"
+                                    type="button"
+                                    onClick={() => setisNewUser((prev) => !prev)}
+                                >
+                                    {isNewUser
+                                        ? "Already have an account?"
+                                        : "Create a new account"}
+                                </Button>
+
+                                {isLoginError && (
+                                    <Alert
+                                        color="red"
+                                        radius="md"
+                                        icon={<ShieldAlert size={18} />}
+                                    >
+                                        {loginError?.message}
+                                    </Alert>
+                                )}
+
+                                {isSignupError && (
+                                    <Alert
+                                        color="red"
+                                        radius="md"
+                                        icon={<ShieldAlert size={18} />}
+                                    >
+                                        {SignUpError?.message}
+                                    </Alert>
+                                )}
+
+                                {isUserExistsError && (
+                                    <Alert
+                                        color="red"
+                                        radius="md"
+                                        icon={<ShieldAlert size={18} />}
+                                    >
+                                        {userExistsError?.message}
+                                    </Alert>
+                                )}
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </Modal>
+                </Modal>
 
-            <div className="flex items-center justify-between">
-                <div className="flex">
-                    <Button variant="subtle" color="gray">Book</Button>
-                    <Button variant="subtle" color="gray">Manage</Button>
-                    <Button variant="subtle" color="gray">Check-in</Button>
-                </div>
-                <div className="flex items-center justify-between">
-                    {useBearStore.getState().isUserLoggedIn ? (
-                        <Button variant="subtle" color="gray" onClick={open}>
-                            Logout
-                        </Button>
-                    ) : (
-                        <Button variant="subtle" color="gray" onClick={handleLogout}>
-                            Login
-                        </Button>
-                    )}
-                </div>
-            </div>
+                <nav className="px-6 py-5">
+                    <div
+                        className="
+                    mx-auto
+                    flex
+                    max-w-7xl
+                    items-center
+                    justify-between
+                    rounded-3xl
+                    border
+                    border-slate-200/60
+                    bg-white/80
+                    px-8
+                    py-4
+                    shadow-xl
+                    backdrop-blur-xl
+                    dark:border-slate-700/60
+                    dark:bg-slate-900/70
+                "
+                    >
+                        {/* Logo */}
+                        <div className="flex items-center gap-12">
+                            <h1 className="text-2xl font-bold tracking-wide">
+                                FlightAI
+                            </h1>
+
+                            <div className="flex items-center gap-2">
+                                <Button radius="xl" variant="light" color="blue" styles={{
+                                    root: {
+                                        background: "#0E636B",
+                                        border: "1px solid #0E636B",
+                                        color: "#fff",
+                                        fontSize: 15,
+                                        fontWeight: 600,
+                                        letterSpacing: "0.4px",
+                                        textTransform: "uppercase",
+                                        transition: "all .2s",
+
+                                        "&:hover": {
+                                            background: "#14808A",
+                                            borderColor: "#14808A",
+                                        },
+                                    },
+                                }}
+                                >
+                                    Book
+                                </Button>
+
+                                <Button radius="xl" variant="subtle" color="gray" styles={{
+                                    root: {
+                                        background: "#0E636B",
+                                        border: "1px solid #0E636B",
+                                        color: "#fff",
+                                        fontSize: 15,
+                                        fontWeight: 600,
+                                        letterSpacing: "0.4px",
+                                        textTransform: "uppercase",
+                                        transition: "all .2s",
+
+                                        "&:hover": {
+                                            background: "#14808A",
+                                            borderColor: "#14808A",
+                                        },
+                                    },
+                                }}
+                                >
+                                    Manage
+                                </Button>
+
+                                <Button radius="xl" variant="subtle" color="gray" styles={{
+                                    root: {
+                                        background: "#0E636B",
+                                        border: "1px solid #0E636B",
+                                        color: "#fff",
+                                        fontSize: 15,
+                                        fontWeight: 600,
+                                        letterSpacing: "0.4px",
+                                        textTransform: "uppercase",
+                                        transition: "all .2s",
+
+                                        "&:hover": {
+                                            background: "#14808A",
+                                            borderColor: "#14808A",
+                                        },
+                                    },
+                                }}
+                                >
+                                    Check-in
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-3">
+                            {useBearStore.getState().isUserLoggedIn ? (
+                                <Button
+                                    radius="xl"
+                                    variant="light"
+                                    color="red"
+                                    onClick={handleLogout}
+                                    styles={{
+                                        root: {
+                                            background: "#0E636B",
+                                            border: "1px solid #0E636B",
+                                            color: "#fff",
+                                            fontSize: 15,
+                                            fontWeight: 600,
+                                            letterSpacing: "0.4px",
+                                            textTransform: "uppercase",
+                                            transition: "all .2s",
+
+                                            "&:hover": {
+                                                background: "#14808A",
+                                                borderColor: "#14808A",
+                                            },
+                                        },
+                                    }}
+
+                                >
+                                    Logout
+                                </Button>
+                            ) : (
+                                <Button
+                                    radius="xl"
+                                    color="dark"
+                                    onClick={open}
+                                    styles={{
+                                        root: {
+                                            background: "#0E636B",
+                                            border: "1px solid #0E636B",
+                                            color: "#fff",
+                                            fontSize: 15,
+                                            fontWeight: 600,
+                                            letterSpacing: "0.4px",
+                                            textTransform: "uppercase",
+                                            transition: "all .2s",
+
+                                            "&:hover": {
+                                                background: "#14808A",
+                                                borderColor: "#14808A",
+                                            },
+                                        },
+                                    }}
+
+                                >
+                                    Login
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </nav>
+            </>
+
         </nav>
     );
 }

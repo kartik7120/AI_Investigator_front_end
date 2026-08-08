@@ -4,7 +4,11 @@ import { MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+// ‼️ import notifications styles after core package styles
+import '@mantine/notifications/styles.css';
+import { Notifications } from '@mantine/notifications';
+// ‼️ import carousel styles after core package styles
+import '@mantine/carousel/styles.css';
 const queryClient = new QueryClient();
 
 const meta = {
@@ -16,7 +20,7 @@ const meta = {
     decorators: [
         (Story) => (
             <QueryClientProvider client={queryClient}>
-                <MantineProvider>
+                <MantineProvider forceColorScheme="dark">
                     <Story />
                 </MantineProvider>
             </QueryClientProvider>

@@ -32,7 +32,8 @@ export default function StatsSection() {
                 {/* Left Card */}
                 <Paper
                     radius="xl"
-                    className="bg-[#1D17C9] p-12 flex flex-col justify-between min-h-[520px]"
+                    bg="#1D17C9"
+                    className="p-12 flex flex-col justify-between min-h-[520px]"
                 >
                     <div>
                         <Title
@@ -49,18 +50,6 @@ export default function StatsSection() {
                         </Text>
                     </div>
 
-                    {/* <div className="flex justify-end">
-                        <ActionIcon
-                            radius="xl"
-                            size={70}
-                            variant="white"
-                            color="gray"
-                        >
-                            <Plane
-                                size={32} className="text-[#1D17C9]"
-                            />
-                        </ActionIcon>
-                    </div> */}
                 </Paper>
 
                 {/* Right Grid */}

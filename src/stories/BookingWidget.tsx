@@ -1,6 +1,12 @@
 import { Button, Select, Text, Title } from "@mantine/core";
 import { DatePickerInput } from '@mantine/dates';
 import { useMemo, useState } from "react";
+import '@mantine/core/styles.css';
+// ‼️ import notifications styles after core package styles
+import '@mantine/notifications/styles.css';
+import { Notifications } from '@mantine/notifications';
+// ‼️ import carousel styles after core package styles
+import '@mantine/carousel/styles.css';
 
 interface DestinationSector {
     name: string;
@@ -22,7 +28,7 @@ interface SectorSelectItem {
 
 const datePickerStyles = {
     label: {
-        color: "#d6d6d6",
+        // color: "#d6d6d6",
         fontSize: 12,
         marginBottom: 6,
         fontWeight: 400,
@@ -45,37 +51,12 @@ const datePickerStyles = {
         "&:focus": {
             borderColor: "#8a8a8a",
         },
-    },
-
-    dropdown: {
-        backgroundColor: "#1c1c1c",
-        border: "1px solid #575757",
-        borderRadius: 0,
-    },
-
-    calendarHeader: {
-        color: "#fff",
-    },
-
-    weekday: {
-        color: "#999",
-        fontWeight: 500,
-    },
-
-    day: {
-        color: "#fff",
-
-        "&[data-selected]": {
-            backgroundColor: "#0E636B",
-        },
-
-        "&[data-in-range]": {
-            backgroundColor: "#0E636B",
-        },
 
         "&:hover": {
-            backgroundColor: "#2d2d2d",
+            borderColor: "#8a8a8a",
+            cursor: "pointer",
         },
+        
     },
 };
 
@@ -370,9 +351,9 @@ export default function BookingWidget() {
                     )}
                 />
             </div>
-            <div className="flex flex-row gap-1 items-center">
+            <div className="flex flex-row gap-4 items-center">
                 <DatePickerInput
-                    label={<Text fw={600} c={"dark"} size="sm">Departure date</Text>}
+                    label={<Text fw={600} size="sm">Departure date</Text>}
                     placeholder="Pick Date"
                     value={value}
                     onChange={setValue}
@@ -382,7 +363,7 @@ export default function BookingWidget() {
                     styles={datePickerStyles}
                 />
                 <DatePickerInput
-                    label={<Text fw={600} c={"dark"} size="sm">Return date</Text>}
+                    label={<Text fw={600} size="sm">Return date</Text>}
                     placeholder="Pick Date"
                     value={destinationTime}
                     onChange={setDestinationTime}
@@ -392,7 +373,71 @@ export default function BookingWidget() {
                     styles={datePickerStyles}
                 />
             </div>
-            <div className="self-end">
+            <div className="self-end flex flex-row gap-1 items-center">
+                <Select
+                    h={56}
+                    // label="Promo Code"
+                    placeholder="Select promo"
+                    data={
+                        ["No Promo", "Summer Sale", "Winter Sale", "Festive Offer"]
+                    }
+                    defaultValue={"No Promo"}
+                    radius={0}
+                    styles={{
+                        label: {
+                            color: "#fff",
+                            marginBottom: 6,
+                            fontWeight: 500,
+                        },
+
+                        input: {
+                            height: 56,
+                            background: "#0E636B",
+                            border: "1px solid #0E636B",
+                            color: "#fff",
+                            fontSize: 15,
+                            fontWeight: 600,
+                            letterSpacing: "0.4px",
+                            textTransform: "uppercase",
+                            transition: "all .2s",
+
+                            "&::placeholder": {
+                                color: "rgba(255,255,255,0.7)",
+                                textTransform: "none",
+                            },
+
+                            "&:hover": {
+                                background: "#14808A",
+                                borderColor: "#14808A",
+                            },
+
+                            "&:focus": {
+                                borderColor: "#14808A",
+                            },
+                        },
+
+                        section: {
+                            color: "#fff", // dropdown chevron
+                        },
+
+                        dropdown: {
+                            background: "#0E636B",
+                            border: "1px solid #14808A",
+                        },
+
+                        option: {
+                            color: "#fff",
+
+                            "&[data-hovered]": {
+                                background: "#14808A",
+                            },
+
+                            "&[data-selected]": {
+                                background: "#14808A",
+                            },
+                        },
+                    }}
+                />
                 <Button
                     h={56}
                     miw={170}

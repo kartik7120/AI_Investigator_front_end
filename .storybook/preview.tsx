@@ -1,6 +1,9 @@
 import type { Preview } from '@storybook/react-vite'
 import '../src/tailwind.css';
-
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
+import "@mantine/notifications/styles.css";
+import "@mantine/carousel/styles.css";
 const preview: Preview = {
   parameters: {
     controls: {
