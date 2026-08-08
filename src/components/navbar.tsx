@@ -6,6 +6,7 @@ import { Mail, ShieldAlert } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import loginImage from "../assets/Static_login_model_image.png";
 import { useBearStore } from "../store/store";
+import { NavLink } from "react-router";
 
 interface checkUserExistsResponse {
     doesUserExist: boolean;
@@ -496,68 +497,74 @@ export default function Navbar() {
                             </h1>
 
                             <div className="flex items-center gap-2">
-                                <Button radius="xl" variant="light" color="blue" styles={{
-                                    root: {
-                                        background: "#0E636B",
-                                        border: "1px solid #0E636B",
-                                        color: "#fff",
-                                        fontSize: 15,
-                                        fontWeight: 600,
-                                        letterSpacing: "0.4px",
-                                        textTransform: "uppercase",
-                                        transition: "all .2s",
+                                <NavLink to="/">
+                                    <Button radius="xl" variant="light" color="blue" styles={{
+                                        root: {
+                                            background: "#0E636B",
+                                            border: "1px solid #0E636B",
+                                            color: "#fff",
+                                            fontSize: 15,
+                                            fontWeight: 600,
+                                            letterSpacing: "0.4px",
+                                            textTransform: "uppercase",
+                                            transition: "all .2s",
 
-                                        "&:hover": {
-                                            background: "#14808A",
-                                            borderColor: "#14808A",
+                                            "&:hover": {
+                                                background: "#14808A",
+                                                borderColor: "#14808A",
+                                            },
                                         },
-                                    },
-                                }}
-                                >
-                                    Book
-                                </Button>
+                                    }}
+                                    >
+                                        Book
+                                    </Button>
+                                </NavLink>
 
-                                <Button radius="xl" variant="subtle" color="gray" styles={{
-                                    root: {
-                                        background: "#0E636B",
-                                        border: "1px solid #0E636B",
-                                        color: "#fff",
-                                        fontSize: 15,
-                                        fontWeight: 600,
-                                        letterSpacing: "0.4px",
-                                        textTransform: "uppercase",
-                                        transition: "all .2s",
+                                <NavLink to="/manage">
+                                    <Button radius="xl" variant="subtle" color="gray" styles={{
+                                        root: {
+                                            background: "#0E636B",
+                                            border: "1px solid #0E636B",
+                                            color: "#fff",
+                                            fontSize: 15,
+                                            fontWeight: 600,
+                                            letterSpacing: "0.4px",
+                                            textTransform: "uppercase",
+                                            transition: "all .2s",
 
-                                        "&:hover": {
-                                            background: "#14808A",
-                                            borderColor: "#14808A",
+                                            "&:hover": {
+                                                background: "#14808A",
+                                                borderColor: "#14808A",
+                                            },
                                         },
-                                    },
-                                }}
-                                >
-                                    Manage
-                                </Button>
+                                    }}
+                                    >
+                                        Manage
+                                    </Button>
+                                </NavLink>
 
-                                <Button radius="xl" variant="subtle" color="gray" styles={{
-                                    root: {
-                                        background: "#0E636B",
-                                        border: "1px solid #0E636B",
-                                        color: "#fff",
-                                        fontSize: 15,
-                                        fontWeight: 600,
-                                        letterSpacing: "0.4px",
-                                        textTransform: "uppercase",
-                                        transition: "all .2s",
+                                <NavLink to="/check-in">
+                                    <Button radius="xl" variant="subtle" color="gray" styles={{
+                                        root: {
+                                            background: "#0E636B",
+                                            border: "1px solid #0E636B",
+                                            color: "#fff",
+                                            fontSize: 15,
+                                            fontWeight: 600,
+                                            letterSpacing: "0.4px",
+                                            textTransform: "uppercase",
+                                            transition: "all .2s",
 
-                                        "&:hover": {
-                                            background: "#14808A",
-                                            borderColor: "#14808A",
+                                            "&:hover": {
+                                                background: "#14808A",
+                                                borderColor: "#14808A",
+                                            },
                                         },
-                                    },
-                                }}
-                                >
-                                    Check-in
-                                </Button>
+                                    }}
+                                    >
+                                        Check-in
+                                    </Button>
+                                </NavLink>
                             </div>
                         </div>
 

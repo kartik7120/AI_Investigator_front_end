@@ -5,6 +5,8 @@ import Offer_Image_2 from '../assets/Offer_2.png';
 import Offer_Image_3 from '../assets/Offer_3.png';
 import Offer_Image_4 from '../assets/Offer_4.png';
 import Offer_Image_5 from '../assets/Offer_5.png';
+import Offer_Image_6 from "../assets/Singapore_Promo_code_Offer.png"
+import { NavLink } from 'react-router';
 
 export const offer_images = [
     "../assets/Offer_1.png",
@@ -12,6 +14,7 @@ export const offer_images = [
     "../assets/Offer_3.png",
     "../assets/Offer_4.png",
     "../assets/Offer_5.png",
+    "../assets/Singapore_Promo_code_Offer.png",
 ]
 
 function loadAssets(): Record<string, string> {
@@ -81,12 +84,17 @@ export default function Offers() {
                         <img src={Offer_Image_4} alt="Offer 4" className="w-full h-full object-cover rounded-lg" />
                     </Carousel.Slide>
                     <Carousel.Slide>
-                        <img src={Offer_Image_5} alt="Offer 5" className="w-full h-full object-cover rounded-lg" />
+                        <NavLink to={"/student_promo"}>
+                            <img src={Offer_Image_5} alt="Offer 5" className="w-full h-full object-cover rounded-lg" />
+                        </NavLink>
+                    </Carousel.Slide>
+                    <Carousel.Slide>
+                        <NavLink to={"/singapore_promo"}>
+                            <img src={Offer_Image_6} alt="Offer 5" className="w-full h-full object-cover rounded-lg" />
+                        </NavLink>
                     </Carousel.Slide>
                 </Carousel>
             </div>
-
-
         </section>
     );
 }
