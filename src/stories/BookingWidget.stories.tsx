@@ -9,7 +9,10 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/carousel/styles.css';
-
+import { Notifications } from "@mantine/notifications";
+import '@mantine/core/styles.css';
+// ‼️ import notifications styles after core package styles
+import '@mantine/notifications/styles.css';
 const queryClient = new QueryClient();
 
 const meta = {
@@ -23,6 +26,7 @@ const meta = {
         (Story) => (
             <QueryClientProvider client={queryClient}>
                 <MantineProvider forceColorScheme="dark">
+                    <Notifications position="top-right" />
                     <MemoryRouter initialEntries={["/"]}>
                         <Story />
                     </MemoryRouter>

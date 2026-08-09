@@ -4,7 +4,9 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/carousel/styles.css";
-
+import '@mantine/core/styles.css';
+// ‼️ import notifications styles after core package styles
+import '@mantine/notifications/styles.css';
 const preview: Preview = {
   parameters: {
     controls: {

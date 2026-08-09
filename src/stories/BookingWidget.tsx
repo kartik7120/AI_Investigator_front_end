@@ -2,6 +2,43 @@ import { Button, Select, Text, Title } from "@mantine/core";
 import { DatePickerInput } from '@mantine/dates';
 import { useMemo, useState } from "react";
 
+import { notifications } from "@mantine/notifications";
+import dayjs from "dayjs";
+
+const PROMO_RULES = {
+    "Summer Sale": {
+        discount: 30,
+        bookingDeadline: "2026-08-31",
+    },
+
+    "Autumn Escape": {
+        discount: 20,
+        bookingDeadline: "2026-10-31",
+    },
+
+    "Festive Offer": {
+        discount: 25,
+        bookingDeadline: "2026-10-31",
+    },
+
+    "Winter Sale": {
+        discount: 20,
+        bookingDeadline: "2026-12-31",
+    },
+
+    "Student15": {
+        discount: 15,
+        requiresStudentId: true,
+    },
+
+    "SkyAEarly10": {
+        discount: 10,
+        departure: "SIN",
+        destination: "DXB",
+        minDaysBeforeDeparture: 7,
+    },
+} as const;
+
 interface DestinationSector {
     name: string;
     code: string;
@@ -56,6 +93,7 @@ const datePickerStyles = {
 
 const destinationSectors: DestinationSector[] = [
     { name: "Delhi", code: "DEL", airport: "Indira Gandhi International Airport" },
+    { name: "Dubai", code: "DXB", airport: "Dubai International Airport" },
     { name: "Mumbai", code: "BOM", airport: "Chhatrapati Shivaji Maharaj International Airport" },
     { name: "Bengaluru", code: "BLR", airport: "Kempegowda International Airport" },
     { name: "Hyderabad", code: "HYD", airport: "Rajiv Gandhi International Airport" },
@@ -104,11 +142,14 @@ const destinationSectors: DestinationSector[] = [
     { name: "Dimapur", code: "DMU", airport: "Dimapur Airport" },
     { name: "Aizawl", code: "AJL", airport: "Lengpui Airport" },
     { name: "Dibrugarh", code: "DIB", airport: "Dibrugarh Airport" },
-    { name: "Jorhat", code: "JRH", airport: "Jorhat Airport" }
+    { name: "Jorhat", code: "JRH", airport: "Jorhat Airport" },
+    { name: "Singapore", code: "SIN", airport: "Singapore Changi Airport" },
 ];
 
 const departureSector: DepartureSector[] = [
     { name: "Delhi", code: "DEL", airport: "Indira Gandhi International Airport" },
+    { name: "Dubai", code: "DXB", airport: "Dubai International Airport" },
+    { name: "Singapore", code: "SIN", airport: "Singapore Changi Airport" },
     { name: "Mumbai", code: "BOM", airport: "Chhatrapati Shivaji Maharaj International Airport" },
     { name: "Bengaluru", code: "BLR", airport: "Kempegowda International Airport" },
     { name: "Hyderabad", code: "HYD", airport: "Rajiv Gandhi International Airport" },
@@ -200,6 +241,209 @@ export default function BookingWidget() {
         []
     );
 
+    const [DestinatonSector, setDestinatonSector] = useState<string | null>(null)
+    const [DepartureSector, setDepartureSector] = useState<string | null>(null)
+
+    const [promoCode, setPromoCode] = useState<string | null>("No Promo");
+
+
+    const [DisableButton, setDisableButton] = useState(false);
+
+    async function handleSearchFlight() {
+        try {
+            setDisableButton(true);
+
+            const isPromoValid = validatePromoCode();
+
+            if (!isPromoValid) {
+                return;
+            }
+
+            // Promo is valid
+            // Continue with your flight search API
+
+            console.log("Searching flights", {
+                departure: DepartureSector,
+                destination: DestinatonSector,
+                departureDate: value,
+                returnDate: destinationTime,
+                promoCode,
+            });
+
+            if (DestinatonSector === DepartureSector) {
+                notifications.show(
+                    {
+                        message: "Destination and Departure sector cannot be the same",
+                        color: "red",
+                        title: "Invalid Journey"
+                    }
+                )
+
+                setDisableButton(true)
+            }
+
+            // await searchFlights(...);
+
+        } catch (error) {
+            console.error(error);
+
+            notifications.show({
+                title: "Search failed",
+                message: "Unable to search flights. Please try again.",
+                color: "red",
+            });
+        } finally {
+            setDisableButton(false);
+        }
+    }
+    const validatePromoCode = (): boolean => {
+        if (!promoCode || promoCode === "No Promo") {
+            return true;
+        }
+
+        const rules = PROMO_RULES[promoCode as keyof typeof PROMO_RULES];
+
+        if (!rules) {
+            notifications.show({
+                title: "Invalid promo code",
+                message: `The promo code "${promoCode}" is not valid.`,
+                color: "red",
+            });
+
+            return false;
+        }
+
+        // -----------------------------------------
+        // ROUTE VALIDATION
+        // -----------------------------------------
+
+        if (
+            "departure" in rules &&
+            rules.departure &&
+            DepartureSector !== rules.departure
+        ) {
+            notifications.show({
+                title: "Promo code not applicable",
+                message: `${promoCode} is valid only for flights departing from ${rules.departure}.`,
+                color: "red",
+                autoClose: 5000,
+            });
+
+            return false;
+        }
+
+        if (
+            "destination" in rules &&
+            rules.destination &&
+            DestinatonSector !== rules.destination
+        ) {
+            notifications.show({
+                title: "Promo code not applicable",
+                message: `${promoCode} is valid only for flights arriving at ${rules.destination}.`,
+                color: "red",
+                autoClose: 5000,
+            });
+
+            return false;
+        }
+
+        // -----------------------------------------
+        // DEPARTURE DATE REQUIRED
+        // -----------------------------------------
+
+        if (!value) {
+            notifications.show({
+                title: "Departure date required",
+                message: "Please select a departure date before applying this promo code.",
+                color: "red",
+                autoClose: 5000,
+            });
+
+            return false;
+        }
+
+        const departureDate = dayjs(value);
+        const today = dayjs();
+
+        // -----------------------------------------
+        // BOOK-BY DATE
+        // -----------------------------------------
+
+        if (
+            "bookingDeadline" in rules &&
+            rules.bookingDeadline &&
+            today.isAfter(dayjs(rules.bookingDeadline), "day")
+        ) {
+            notifications.show({
+                title: "Promo code expired",
+                message: `${promoCode} was valid only for bookings made by ${dayjs(
+                    rules.bookingDeadline
+                ).format("DD MMM YYYY")}.`,
+                color: "red",
+                autoClose: 5000,
+            });
+
+            return false;
+        }
+
+        // -----------------------------------------
+        // 7+ DAYS ADVANCE BOOKING
+        // -----------------------------------------
+
+        if (
+            "minDaysBeforeDeparture" in rules &&
+            rules.minDaysBeforeDeparture
+        ) {
+            const minimumDepartureDate = today.add(
+                rules.minDaysBeforeDeparture,
+                "day"
+            );
+
+            if (departureDate.isBefore(minimumDepartureDate, "day")) {
+                notifications.show({
+                    title: "Promo code not applicable",
+                    message: `${promoCode} requires the flight to be booked at least ${rules.minDaysBeforeDeparture} days After Booking date.`,
+                    color: "red",
+                    autoClose: 5000,
+                });
+
+                return false;
+            }
+        }
+
+        // -----------------------------------------
+        // STUDENT PROMO
+        // -----------------------------------------
+
+        if (
+            "requiresStudentId" in rules &&
+            rules.requiresStudentId
+        ) {
+            notifications.show({
+                title: "Student ID required",
+                message:
+                    "Student15 requires a valid student ID. Please provide your student ID to continue.",
+                color: "red",
+                autoClose: 5000,
+            });
+
+            return false;
+        }
+
+        // -----------------------------------------
+        // SUCCESS
+        // -----------------------------------------
+
+        notifications.show({
+            title: "Promo code applied",
+            message: `${promoCode} has been successfully applied. You save up to ${rules.discount}%.`,
+            color: "teal",
+            autoClose: 4000,
+        });
+
+        return true;
+    };
+
     return <div className="flex flex-col gap-10 w-full p-6 *:gap-6 bg-[#1c1c1c]">
 
         <Title h={1} mb={20} className="text-2xl md:text-3xl lg:text-4xl text-center font-bold">
@@ -210,7 +454,10 @@ export default function BookingWidget() {
             <div className="flex flex-row gap-1 items-center">
                 <Select
                     label={<Text fw={600} size="sm">Departure sector</Text>}
+                    value={DepartureSector}
+                    onChange={setDepartureSector}
                     placeholder="Pick value"
+                    searchable
                     data={
                         [
                             ...departureSector.map((sector) => ({
@@ -278,6 +525,9 @@ export default function BookingWidget() {
                 />
                 <Select
                     label={<Text fw={600} size="sm">Destination sector</Text>}
+                    value={DestinatonSector}
+                    searchable
+                    onChange={setDestinatonSector}
                     placeholder="Pick value"
                     data={
                         [
@@ -372,9 +622,17 @@ export default function BookingWidget() {
                     h={56}
                     // label="Promo Code"
                     placeholder="Select promo"
-                    data={
-                        ["No Promo", "Summer Sale", "Winter Sale", "Festive Offer"]
-                    }
+                    value={promoCode}
+                    onChange={setPromoCode}
+                    data={[
+                        "No Promo",
+                        "Summer Sale",
+                        "Autumn Escape",
+                        "Winter Sale",
+                        "Festive Offer",
+                        "Student15",
+                        "SkyAEarly10",
+                    ]}
                     defaultValue={"No Promo"}
                     radius={0}
                     styles={{
@@ -453,6 +711,8 @@ export default function BookingWidget() {
                             },
                         },
                     }}
+
+                    onClick={handleSearchFlight}
                 >
                     Search Flights
                 </Button>
