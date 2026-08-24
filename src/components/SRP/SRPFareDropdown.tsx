@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Card,
   Divider,
   Group,
@@ -8,9 +9,10 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { ChevronDown, Check, Plane } from "lucide-react";
+import { ChevronDown, Check, Plane, ChevronUp } from "lucide-react";
 
 import type { Fare } from "./SRPFareCard";
+import { useState } from "react";
 
 interface SRPFareDropdownProps {
   FlightNumbers: string;
@@ -41,6 +43,8 @@ export default function SRPFareDropdown(props: SRPFareDropdownProps) {
     lowest_price,
   } = props;
 
+  const [IsPopOverOpen, setIsPopOverOpen] = useState(false);
+
   return (
     <Popover
       width="target"
@@ -57,6 +61,9 @@ export default function SRPFareDropdown(props: SRPFareDropdownProps) {
           style={{
             overflow: "hidden",
             cursor: "pointer",
+          }}
+          onClick={() => {
+            setIsPopOverOpen(!IsPopOverOpen);
           }}
         >
           {/* Main flight information */}
@@ -137,7 +144,11 @@ export default function SRPFareDropdown(props: SRPFareDropdownProps) {
                   Economy Class
                 </Text>
 
-                <ChevronDown size={20} color="red" />
+                {IsPopOverOpen ? (
+                  <ChevronUp size={20} color="red" />
+                ) : (
+                  <ChevronDown size={20} color="red" />
+                )}
               </Group>
 
               <Text size="sm">
@@ -232,10 +243,11 @@ function FareOption({ fare }: FareOptionProps) {
 
           <Group gap="xs">
             <Check size={16} />
-
             <Text size="sm">{fare.cabinBaggageAllowance} kg cabin baggage</Text>
           </Group>
         </Stack>
+        {/* TODO: Use the Navigate button to take this fare and move to the pax edit page. */}
+        <Button color="dark">Select</Button>
       </Stack>
     </Card>
   );
