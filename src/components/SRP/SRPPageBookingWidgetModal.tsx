@@ -1,14 +1,15 @@
 import { Modal } from "@mantine/core";
 import React, { useState } from "react";
 import EditSRPBookingWidget from "./EditSRPBookingWidget";
+import BookingWidget from "../../stories/BookingWidget";
 
 export default function SRPPageBookingWidgetModal() {
   const [opened, setOpened] = useState(false);
 
   return (
     <div>
-      <Modal onClose={() => "closed"} opened={opened}>
-        
+      <Modal onClose={() => setOpened(false)} opened={opened} size="auto" >
+        <BookingWidget />
       </Modal>
 
       <EditSRPBookingWidget
