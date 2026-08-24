@@ -21,6 +21,8 @@ export interface Fare {
   cancellationFee: string;
   miles: string;
   lowestPrice?: boolean;
+  FareType: string;
+  cabinBaggageAllowance: string;
 }
 
 interface FlightResultCardProps {
