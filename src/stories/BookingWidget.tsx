@@ -1,9 +1,10 @@
 import { Button, Select, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { notifications } from "@mantine/notifications";
 import dayjs from "dayjs";
+import { useBearStore } from "../store/store";
 
 const PROMO_RULES = {
   "Summer Sale": {
@@ -413,6 +414,20 @@ export default function BookingWidget() {
 
   const [, setDisableButton] = useState(false);
 
+  const setDeparture = useBearStore((state) => state.setDepartureSector);
+  const setDestination = useBearStore((state) => state.setDestinationSector);
+  const setPromo = useBearStore((state) => state.setPromoCode);
+  const setOnwardDate = useBearStore((state) => state.setDepartureDate);
+  const setReturnD = useBearStore((state) => state.setReturnDate);
+
+  useEffect(() => {
+    setDeparture("");
+    setDestination("");
+    setPromo("");
+    setOnwardDate("");
+    setReturnD("");
+  }, [setDeparture, setDestination, setPromo, setOnwardDate, setReturnD]);
+
   async function handleSearchFlight() {
     try {
       setDisableButton(true);
@@ -444,7 +459,13 @@ export default function BookingWidget() {
         setDisableButton(true);
       }
 
-      // await searchFlights(...);
+      // Set the destination_sector etc in the store
+
+      setDeparture(DepartureSector || "");
+      setDestination(DestinatonSector || "");
+      setPromo(promoCode || "");
+      setOnwardDate(value || "");
+      setReturnD(destinationTime || "");
     } catch (error) {
       console.error(error);
 

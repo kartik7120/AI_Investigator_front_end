@@ -1,11 +1,12 @@
 import { ActionIcon, Group, Paper, Stack, Text } from "@mantine/core";
 import { Pencil } from "lucide-react";
 
-interface EditSRPBookingWidgetProps {
+export interface EditSRPBookingWidgetProps {
   departure_sector: string;
   destination_sector: string;
   departure_date: string;
   destination_date: string;
+  return_date: string;
   onEdit?: () => void;
 }
 
