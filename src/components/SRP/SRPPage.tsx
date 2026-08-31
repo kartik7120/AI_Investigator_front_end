@@ -8,6 +8,10 @@ import {
   FlightDuration,
 } from "../../utils/ConvertUTCToDateAndTime";
 import type { Fare } from "./SRPFareCard";
+import { useEffect } from "react";
+import { Modal, Button, Text, Stack } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useNavigate } from "react-router";
 
 function getBaggageAndFees(
   baggage: BaggageAllowance[],
@@ -115,6 +119,9 @@ export default function SRPPage() {
     (store) => store.return_date,
   );
 
+  const [opened, { open, close }] = useDisclosure(false);
+  const navigate = useNavigate();
+
   const {
     data: searchFlightData,
     isPending,
@@ -143,8 +150,48 @@ export default function SRPPage() {
       ),
   });
 
+  useEffect(() => {
+    if (
+      DepartureDate === "" ||
+      DestinatonSector === "" ||
+      DepartureSector === "" ||
+      DestinationDate === ""
+    ) {
+      open();
+    }
+  }, [
+    DepartureDate,
+    DestinatonSector,
+    DepartureSector,
+    DestinationDate,
+  ]);
+
   return (
     <div>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="No Search Data Found"
+        centered
+        closeOnClickOutside={false}
+      >
+        <Stack align="center">
+          <Text ta="center" c="dimmed">
+            We couldn't find any flight search information.
+            Please return to the home page and search again.
+          </Text>
+
+          <Button
+            fullWidth
+            onClick={() => {
+              close();
+              navigate("/");
+            }}
+          >
+            Go to Home
+          </Button>
+        </Stack>
+      </Modal>
       <div>
         <SRPPageBookingWidgetModal
           departure_date={DepartureDate}
