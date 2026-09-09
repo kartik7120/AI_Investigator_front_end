@@ -1,6 +1,8 @@
 import { create } from "zustand";
+import type { ContactDetails, Passenger } from "../components/paxEditPage/PaxDetailsForm";
+import type { Flight } from "../utils/useFulInterfaces";
 
-interface BearState {
+export interface BearState {
   isUserLoggedIn: boolean;
   email: string;
 
@@ -9,6 +11,10 @@ interface BearState {
   return_date: string;
   promo_code: string;
   departure_date: string;
+  passengers: Passenger[];
+  ContactDetails: ContactDetails;
+  numberOfPassengers: number
+  flights: Flight[];
 
   setIsUserLoggedIn: (isLoggedIn: boolean) => void;
   setEmail: (email: string) => void;
@@ -17,19 +23,34 @@ interface BearState {
   setReturnDate: (returnDate: string) => void;
   setPromoCode: (promoCode: string) => void;
   setDepartureDate: (departure_date: string) => void;
+  setPassengers: (passengers: Passenger[]) => void;
+  setContactDetails: (contactDetails: ContactDetails) => void;
+  setNumberOfPassengers: (numberOfPassengers: number) => void;
+  setFlights: (flights: Flight[]) => void;
 }
 
 export const useBearStore = create<BearState>((set) => ({
   isUserLoggedIn: false,
   email: "",
-
+  numberOfPassengers: 1,
   destination_sector: "",
   departure_sector: "",
   return_date: "",
   promo_code: "",
   departure_date: "",
+  passengers: [],
+  ContactDetails: {
+    contactPerson: "",
+    mobileNumber: "",
+    email: "",
+  },
+  flights: [],
+
+  setFlights: (flights) => set({ flights: flights }),
 
   setIsUserLoggedIn: (isLoggedIn) => set({ isUserLoggedIn: isLoggedIn }),
+
+  setPassengers: (passengers) => set({ passengers: passengers }),
 
   setEmail: (email) => set({ email }),
 
@@ -44,4 +65,10 @@ export const useBearStore = create<BearState>((set) => ({
   setPromoCode: (promoCode) => set({ promo_code: promoCode }),
 
   setDepartureDate: (departure_date: string) => set({ departure_date }),
+
+  setContactDetails: (contactDetails: ContactDetails) => set({ ContactDetails: contactDetails }),
+
+  setNumberOfPassengers(numberOfPassengers) {
+    set({ numberOfPassengers })
+  },
 }));

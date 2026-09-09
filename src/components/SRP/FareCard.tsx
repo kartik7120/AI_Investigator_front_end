@@ -70,7 +70,7 @@ export default function FareCard({ fare }: FareCardProps) {
           <FareValue value={fare.miles} />
         </div>
 
-        <Button variant="outline" color="gray" fullWidth mt="md" radius="md">
+        <Button variant="outline" color="gray" fullWidth mt="md" radius="md" >
           Select
         </Button>
       </Stack>

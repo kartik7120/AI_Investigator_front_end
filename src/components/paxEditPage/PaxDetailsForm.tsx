@@ -10,8 +10,9 @@ import {
     Title,
 } from "@mantine/core";
 import { useState } from "react";
+import { useBearStore } from "../../store/store";
 
-type Passenger = {
+export type Passenger = {
     title: string;
     firstName: string;
     lastName: string;
@@ -23,7 +24,7 @@ type PassengerErrors = {
     lastName?: string;
 };
 
-type ContactDetails = {
+export type ContactDetails = {
     contactPerson: string;
     mobileNumber: string;
     email: string;
@@ -49,6 +50,8 @@ export default function PaxDetailsForm({
             lastName: "",
         }))
     );
+
+    const store = useBearStore();
 
     const [passengerErrors, setPassengerErrors] = useState<
         PassengerErrors[]
@@ -182,6 +185,9 @@ export default function PaxDetailsForm({
         console.log("Passenger details:", payload);
 
         // mutation.mutate(payload);
+
+        store.setContactDetails(contactDetails);
+        store.setPassengers(passengers);
     };
 
     return (
