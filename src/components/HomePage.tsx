@@ -6,11 +6,10 @@ import Offers from "./Offers";
 import '@mantine/core/styles.css';
 // ‼️ import notifications styles after core package styles
 import '@mantine/notifications/styles.css';
-import { Notifications } from '@mantine/notifications';
 import '@mantine/core/styles.css';
 // ‼️ import carousel styles after core package styles
-
 import '@mantine/carousel/styles.css';
+
 export default function HomePage() {
     return (
         <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-50 via-white to-slate-100 text-slate-900 transition-colors dark:from-slate-950 dark:via-slate-900 dark:to-black dark:text-white">
