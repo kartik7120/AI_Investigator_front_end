@@ -17,11 +17,14 @@ import CheckInIndex from './components/check-in/check_in_index.tsx';
 import ManageIndex from './components/manage/manage_index.tsx';
 import SkyEarlyPromoTerms from './components/Singapore_promo_terms_conditions.tsx';
 import StudentPromoTerms from './components/Student_promo_code_terms.tsx';
+import SRPPage from './components/SRP/SRPPage.tsx';
+import HomePage from './components/HomePage.tsx';
+import PaxEditPage from './components/paxEditPage/PaxEditPage.tsx';
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <HomePage />,
   },
   {
     path: "/check-in",
@@ -38,7 +41,15 @@ export const router = createBrowserRouter([
   {
     path: "/student_promo",
     element: <StudentPromoTerms />
-  }
+  },
+  {
+    path: "/SRPPage",
+    element: <SRPPage />
+  },
+  {
+    path: "/passengerEditPage",
+    element: <PaxEditPage />
+  },
 ]);
 
 export const queryClient = new QueryClient();

@@ -50,3 +50,56 @@ export const mockBearState: Partial<BearState> = {
         }
     ],
 };
+
+export const mockDataForTripSummary: Partial<BearState> = {
+    numberOfPassengers: 2,
+
+    departure_sector: "DEL",
+    destination_sector: "DXB",
+    departure_date: "2026-09-20",
+    return_date: "2026-09-27",
+
+    flights: [
+        {
+            id: 51,
+            flightNumber: "AI123",
+            departureSector: "DEL",
+            destinationSector: "DXB",
+            departureTime: "2026-09-20T10:30:00",
+            arrivalTime: "2026-09-20T13:00:00",
+            fareType: "ECONOMY",
+            basePrice: [{
+                basePrice: 8000,
+                currentPrice: 8500,
+                fareType: "ECONOMY",
+            }],
+            currentPrice: null,
+            baggageAllowance: [
+                "DOMESTIC_ECONOMY"
+            ],
+            status: "On Time",
+            seatMap: [],
+        },
+        {
+            id: 52,
+            flightNumber: "AI456",
+            departureSector: "DXB",
+            destinationSector: "DEL",
+            departureTime: "2026-09-27T15:30:00",
+            arrivalTime: "2026-09-27T20:00:00",
+            fareType: "ECONOMY",
+            basePrice: [{
+                basePrice: 8500,
+                currentPrice: 9000,
+                fareType: "ECONOMY",
+            }],
+            currentPrice: null,
+            baggageAllowance: [
+                "DOMESTIC_ECONOMY"
+            ],
+            status: "On Time",
+            seatMap: [],
+        },
+    ],
+};
+

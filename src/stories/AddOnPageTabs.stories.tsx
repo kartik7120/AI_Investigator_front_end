@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MantineProvider } from "@mantine/core";
 import { useBearStore } from "../store/store";
-import { mockBearState } from "./mocks/bearStoreMock";
+import { mockBearState, mockDataForTripSummary } from "./mocks/bearStoreMock";
 // import Demo from "../components/Add-ons/TestAddons";
 import AddOnPageTabs from "../components/Add-ons/AddOnPageTabs";
-import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = useQueryClient();
+const queryClient = new QueryClient();
 
 const meta = {
     component: AddOnPageTabs,
@@ -15,6 +15,8 @@ const meta = {
         (Story) => {
 
             useBearStore.setState(mockBearState);
+            useBearStore.setState(mockDataForTripSummary);
+
             return (
                 <QueryClientProvider client={queryClient}>
                     <MantineProvider>
