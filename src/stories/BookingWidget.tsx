@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
 import dayjs from "dayjs";
 import { useBearStore } from "../store/store";
+import { useNavigate } from "react-router";
 
 const PROMO_RULES = {
   "Summer Sale": {
@@ -407,6 +408,8 @@ export default function BookingWidget() {
     () => slogans[Math.floor(Math.random() * slogans.length)],
   );
 
+  const navigate = useNavigate();
+
   const [DestinatonSector, setDestinatonSector] = useState<string | null>(null);
   const [DepartureSector, setDepartureSector] = useState<string | null>(null);
 
@@ -477,6 +480,8 @@ export default function BookingWidget() {
     } finally {
       setDisableButton(false);
     }
+
+    navigate("/SRPPage")
   }
   const validatePromoCode = (): boolean => {
     if (!promoCode || promoCode === "No Promo") {

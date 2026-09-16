@@ -6,7 +6,6 @@ import Offers from "./Offers";
 import '@mantine/core/styles.css';
 // ‼️ import notifications styles after core package styles
 import '@mantine/notifications/styles.css';
-import '@mantine/core/styles.css';
 // ‼️ import carousel styles after core package styles
 import '@mantine/carousel/styles.css';
 

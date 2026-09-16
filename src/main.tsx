@@ -7,11 +7,8 @@ import '@mantine/core/styles.css';
 // ‼️ import notifications styles after core package styles
 import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
-import '@mantine/core/styles.css';
 // ‼️ import carousel styles after core package styles
-import '@mantine/carousel/styles.css';
-import { createBrowserRouter } from "react-router";
-import { RouterProvider } from "react-router/dom";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import CheckInIndex from './components/check-in/check_in_index.tsx';
 import ManageIndex from './components/manage/manage_index.tsx';
 import SkyEarlyPromoTerms from './components/Singapore_promo_terms_conditions.tsx';
@@ -57,10 +54,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
-        <Notifications>
-          <RouterProvider router={router} />
-        </Notifications>
+        {/* <Notifications> */}
+        <RouterProvider router={router} />
+        {/* </Notifications> */}
       </MantineProvider>
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode >,
 )
+

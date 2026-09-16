@@ -7,6 +7,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import loginImage from "../assets/Static_login_model_image.png";
 import { useBearStore } from "../store/store";
 import { NavLink } from "react-router";
+import '../tailwind.css';
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/carousel/styles.css';
 
 interface checkUserExistsResponse {
     doesUserExist: boolean;
