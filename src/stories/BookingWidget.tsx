@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import { useBearStore } from "../store/store";
 import { useNavigate } from "react-router";
 
+import "@mantine/dates/styles.css"
+
 const PROMO_RULES = {
   "Summer Sale": {
     discount: 30,
@@ -39,6 +41,10 @@ const PROMO_RULES = {
     destination: "DXB",
     minDaysBeforeDeparture: 7,
   },
+
+  "NOPROMO": {
+
+  }
 } as const;
 
 interface DestinationSector {
@@ -413,7 +419,7 @@ export default function BookingWidget() {
   const [DestinatonSector, setDestinatonSector] = useState<string | null>(null);
   const [DepartureSector, setDepartureSector] = useState<string | null>(null);
 
-  const [promoCode, setPromoCode] = useState<string | null>("No Promo");
+  const [promoCode, setPromoCode] = useState<string | null>("NOPROMO");
 
   const [, setDisableButton] = useState(false);
 
@@ -443,14 +449,6 @@ export default function BookingWidget() {
 
       // Promo is valid
       // Continue with your flight search API
-
-      console.log("Searching flights", {
-        departure: DepartureSector,
-        destination: DestinatonSector,
-        departureDate: value,
-        returnDate: destinationTime,
-        promoCode,
-      });
 
       if (DestinatonSector === DepartureSector) {
         notifications.show({
@@ -484,7 +482,7 @@ export default function BookingWidget() {
     navigate("/SRPPage")
   }
   const validatePromoCode = (): boolean => {
-    if (!promoCode || promoCode === "No Promo") {
+    if (!promoCode || promoCode === "NOPROMO") {
       return true;
     }
 
@@ -618,7 +616,9 @@ export default function BookingWidget() {
 
     notifications.show({
       title: "Promo code applied",
-      message: `${promoCode} has been successfully applied. You save up to ${rules.discount}%.`,
+      message: `${promoCode} has been successfully applied. You save up to ${
+        "discount" in rules ? rules.discount : 0
+      }%.`,
       color: "teal",
       autoClose: 4000,
     });
@@ -673,6 +673,7 @@ export default function BookingWidget() {
                 borderRadius: 0,
                 height: 56,
                 fontSize: 16,
+                cursor: "pointer",
 
                 "&::placeholder": {
                   color: "#8c8c8c",
@@ -745,6 +746,7 @@ export default function BookingWidget() {
                 borderRadius: 0,
                 height: 56,
                 fontSize: 16,
+                cursor: "pointer",
 
                 "&::placeholder": {
                   color: "#8c8c8c",
@@ -753,6 +755,7 @@ export default function BookingWidget() {
                 "&:focus": {
                   borderColor: "#8a8a8a",
                 },
+
               },
 
               dropdown: {
@@ -818,10 +821,10 @@ export default function BookingWidget() {
             styles={datePickerStyles}
           />
         </div>
-        <div className="self-end flex flex-row gap-1 items-center">
+        <div className="self-end flex flex-row gap-1 items-end">
           <Select
+            w={250}
             h={56}
-            // label="Promo Code"
             placeholder="Select promo"
             value={promoCode}
             onChange={setPromoCode}
@@ -834,17 +837,16 @@ export default function BookingWidget() {
               "Student15",
               "SkyAEarly10",
             ]}
-            defaultValue={"No Promo"}
+            defaultValue="No Promo"
             radius={0}
             styles={{
-              label: {
-                color: "#fff",
-                marginBottom: 6,
-                fontWeight: 500,
+              root: {
+                height: 56,
               },
 
               input: {
                 height: 56,
+                minHeight: 56,
                 background: "#0E636B",
                 border: "1px solid #0E636B",
                 color: "#fff",
@@ -870,7 +872,7 @@ export default function BookingWidget() {
               },
 
               section: {
-                color: "#fff", // dropdown chevron
+                color: "#fff",
               },
 
               dropdown: {
@@ -891,12 +893,15 @@ export default function BookingWidget() {
               },
             }}
           />
+
           <Button
+            w={192}
             h={56}
-            miw={170}
             radius={0}
             styles={{
               root: {
+                height: 56,
+                minHeight: 56,
                 background: "#0E636B",
                 border: "1px solid #0E636B",
                 color: "#fff",
@@ -912,7 +917,6 @@ export default function BookingWidget() {
                 },
               },
             }}
-
             onClick={handleSearchFlight}
           >
             Search Flights

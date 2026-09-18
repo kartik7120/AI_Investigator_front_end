@@ -154,8 +154,7 @@ export default function SRPPage() {
     if (
       DepartureDate === "" ||
       DestinatonSector === "" ||
-      DepartureSector === "" ||
-      DestinationDate === ""
+      DepartureSector === ""
     ) {
       open();
     }

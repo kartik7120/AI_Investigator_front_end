@@ -36,7 +36,7 @@ export const useBearStore = create<BearState>((set) => ({
   destination_sector: "",
   departure_sector: "",
   return_date: "",
-  promo_code: "",
+  promo_code: "NOPROMO",
   departure_date: "",
   passengers: [],
   ContactDetails: {
