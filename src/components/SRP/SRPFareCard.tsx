@@ -12,6 +12,7 @@ import {
 } from "@mantine/core";
 import { ArrowRight, ChevronUp, Plane } from "lucide-react";
 import FareCard from "./FareCard";
+import type { Flight } from "../../utils/useFulInterfaces";
 
 export interface Fare {
   name: string;
@@ -23,6 +24,7 @@ export interface Fare {
   lowestPrice?: boolean;
   FareType: string;
   cabinBaggageAllowance: string;
+  flight: Flight
 }
 
 interface FlightResultCardProps {

@@ -13,10 +13,15 @@ import { Modal, Button, Text, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
 import { calculateLowestPrice } from "../../utils/calculateLowestPrice";
+import type {
+  BaggageAllowanceType,
+  Flight,
+} from "../../utils/useFulInterfaces";
 
 function getBaggageAndFees(
   baggage: BaggageAllowance[],
   baseFare: Price[],
+  flight: Flight
 ): Fare[] {
   const fares: Fare[] = [];
 
@@ -39,6 +44,7 @@ function getBaggageAndFees(
       lowestPrice: false,
       FareType: price.fareType,
       cabinBaggageAllowance: `${baggageAllowance.cabinBaggageAllowance} kg`,
+      flight
     });
   }
 
@@ -52,7 +58,7 @@ export interface Price {
 }
 
 export interface BaggageAllowance {
-  fareType: string;
+  fareType: BaggageAllowanceType;
   cabinBaggageAllowance: number;
   checkInBaggageAllowance: number;
 }
@@ -100,6 +106,9 @@ async function getSearchFlights(
 }
 
 export default function SRPPage() {
+
+  const navigate = useNavigate();
+
   const DepartureSector = useBearStore(
     (store) => store.departure_sector,
   );
@@ -121,7 +130,6 @@ export default function SRPPage() {
   );
 
   const [opened, { open, close }] = useDisclosure(false);
-  const navigate = useNavigate();
 
   const {
     data: searchFlightData,
@@ -165,6 +173,12 @@ export default function SRPPage() {
     DepartureSector,
     DestinationDate,
   ]);
+
+  const flights = useBearStore((store) => store.flights)
+
+  const handleSRPNextButton = async () => {
+    navigate("/passengerEditPage")
+  }
 
   return (
     <div className="flex flex-col items-center gap-y-3.5 m-4">
@@ -294,6 +308,20 @@ export default function SRPPage() {
                   fares={getBaggageAndFees(
                     val.baggageAllowance,
                     val.basePrice,
+                    {
+                      arrivalTime: val.arrivalTime,
+                      id: val.id,
+                      flightNumber: val.flightNumber,
+                      departureSector: val.departureSector,
+                      destinationSector: val.destinationSector,
+                      departureTime: val.departureTime,
+                      basePrice: val.basePrice,
+                      currentPrice: val.currentPrice,
+                      baggageAllowance: val.baggageAllowance,
+                      fareType: null,
+                      status: null,
+                      seatMap: []
+                    }
                   )}
                   departure_city=""
                   destination_city=""
@@ -303,6 +331,17 @@ export default function SRPPage() {
             })}
           </>
         )}
+      </div>
+
+      <div className="self-end">
+        <Button
+          variant="gradient"
+          gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+          onClick={handleSRPNextButton}
+          disabled={!(flights.length > 0)}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

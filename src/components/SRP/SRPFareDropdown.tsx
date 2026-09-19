@@ -13,6 +13,7 @@ import { ChevronDown, Check, Plane, ChevronUp } from "lucide-react";
 
 import type { Fare } from "./SRPFareCard";
 import { useState } from "react";
+import { useBearStore } from "../../store/store";
 
 interface SRPFareDropdownProps {
   FlightNumbers: string;
@@ -203,6 +204,17 @@ interface FareOptionProps {
 }
 
 function FareOption({ fare }: FareOptionProps) {
+
+  const setFlights = useBearStore((store) => store.setFlights)
+
+  const flights = useBearStore((store) => store.flights)
+
+  async function handleFareSelection() {
+    setFlights(
+      [...flights, fare.flight]
+    )
+  }
+
   return (
     <Card
       withBorder
@@ -247,7 +259,7 @@ function FareOption({ fare }: FareOptionProps) {
           </Group>
         </Stack>
         {/* TODO: Use the Navigate button to take this fare and move to the pax edit page. */}
-        <Button color="dark" className="justify-end">Select</Button>
+        <Button color="dark" className="justify-end" onClick={handleFareSelection}>Select</Button>
       </Stack>
     </Card>
   );

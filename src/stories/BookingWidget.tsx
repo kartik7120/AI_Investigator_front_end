@@ -1,4 +1,4 @@
-import { Button, Select, Text, Title } from "@mantine/core";
+import { Button, NumberInput, Select, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
 
@@ -8,6 +8,7 @@ import { useBearStore } from "../store/store";
 import { useNavigate } from "react-router";
 
 import "@mantine/dates/styles.css"
+import { Users } from "lucide-react";
 
 const PROMO_RULES = {
   "Summer Sale": {
@@ -420,6 +421,7 @@ export default function BookingWidget() {
   const [DepartureSector, setDepartureSector] = useState<string | null>(null);
 
   const [promoCode, setPromoCode] = useState<string | null>("NOPROMO");
+  const [passengers, setPassengers] = useState<number>(1);
 
   const [, setDisableButton] = useState(false);
 
@@ -428,6 +430,7 @@ export default function BookingWidget() {
   const setPromo = useBearStore((state) => state.setPromoCode);
   const setOnwardDate = useBearStore((state) => state.setDepartureDate);
   const setReturnD = useBearStore((state) => state.setReturnDate);
+  const setStorePassengers = useBearStore((state) => state.setNumberOfPassengers)
 
   useEffect(() => {
     setDeparture("");
@@ -467,6 +470,7 @@ export default function BookingWidget() {
       setPromo(promoCode || "");
       setOnwardDate(value || "");
       setReturnD(destinationTime || "");
+      setStorePassengers(passengers)
     } catch (error) {
       console.error(error);
 
@@ -616,9 +620,8 @@ export default function BookingWidget() {
 
     notifications.show({
       title: "Promo code applied",
-      message: `${promoCode} has been successfully applied. You save up to ${
-        "discount" in rules ? rules.discount : 0
-      }%.`,
+      message: `${promoCode} has been successfully applied. You save up to ${"discount" in rules ? rules.discount : 0
+        }%.`,
       color: "teal",
       autoClose: 4000,
     });
@@ -639,14 +642,9 @@ export default function BookingWidget() {
       <div className="flex flex-row gap-2 items-center justify-center">
         <div className="flex flex-row gap-1 items-center">
           <Select
-            label={
-              <Text fw={600} size="sm">
-                Departure sector
-              </Text>
-            }
             value={DepartureSector}
             onChange={setDepartureSector}
-            placeholder="Pick value"
+            placeholder="Departure Sector"
             searchable
             data={[
               ...departureSector.map((sector) => ({
@@ -713,15 +711,10 @@ export default function BookingWidget() {
             }
           />
           <Select
-            label={
-              <Text fw={600} size="sm">
-                Destination sector
-              </Text>
-            }
             value={DestinatonSector}
             searchable
             onChange={setDestinatonSector}
-            placeholder="Pick value"
+            placeholder="Destination Sector"
             data={[
               ...destinationSectors.map((sector) => ({
                 value: sector.code,
@@ -789,12 +782,8 @@ export default function BookingWidget() {
         </div>
         <div className="flex flex-row gap-4 items-center">
           <DatePickerInput
-            label={
-              <Text fw={600} size="sm">
-                Departure date
-              </Text>
-            }
-            placeholder="Pick Date"
+
+            placeholder="Departure Date"
             value={value}
             onChange={setValue}
             valueFormat="DD MMM YY"
@@ -805,12 +794,7 @@ export default function BookingWidget() {
             styles={datePickerStyles}
           />
           <DatePickerInput
-            label={
-              <Text fw={600} size="sm">
-                Return date
-              </Text>
-            }
-            placeholder="Pick Date"
+            placeholder="Return Date"
             value={destinationTime}
             onChange={setDestinationTime}
             valueFormat="DD MMM YY"
@@ -821,7 +805,7 @@ export default function BookingWidget() {
             styles={datePickerStyles}
           />
         </div>
-        <div className="self-end flex flex-row gap-1 items-end">
+        <div className="flex justify-center flex-row gap-1 items-center">
           <Select
             w={250}
             h={56}
@@ -840,9 +824,9 @@ export default function BookingWidget() {
             defaultValue="No Promo"
             radius={0}
             styles={{
-              root: {
-                height: 56,
-              },
+              // root: {
+              //   height: 56,
+              // },
 
               input: {
                 height: 56,
@@ -894,33 +878,83 @@ export default function BookingWidget() {
             }}
           />
 
-          <Button
-            w={192}
-            h={56}
-            radius={0}
-            styles={{
-              root: {
-                height: 56,
-                minHeight: 56,
-                background: "#0E636B",
-                border: "1px solid #0E636B",
-                color: "#fff",
-                fontSize: 15,
-                fontWeight: 600,
-                letterSpacing: "0.4px",
-                textTransform: "uppercase",
-                transition: "all .2s",
+          <div>
 
-                "&:hover": {
-                  background: "#14808A",
-                  borderColor: "#14808A",
+            <NumberInput
+              value={passengers}
+              onChange={(value) =>
+                setPassengers(typeof value === "number" ? value : Number(value))
+              }
+              placeholder="Passengers"
+              min={1}
+              max={9}
+              allowDecimal={false}
+              clampBehavior="strict"
+              leftSection={<Users size={20} />}
+              leftSectionWidth={42}
+              hideControls={false}
+              styles={{
+                label: {
+                  color: "#F5F5F5",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  marginBottom: "6px",
                 },
-              },
-            }}
-            onClick={handleSearchFlight}
-          >
-            Search Flights
-          </Button>
+
+                input: {
+                  height: 56,
+                  backgroundColor: "#151515",
+                  border: "1px solid #4A4A4A",
+                  borderRadius: "0px",
+                  color: "#F5F5F5",
+                  fontSize: "15px",
+                  paddingLeft: "42px",
+
+                  "&:focus": {
+                    borderColor: "#0E9BA3",
+                  },
+
+                  "&:hover": {
+                    borderColor: "#6A6A6A",
+                  },
+                },
+
+                section: {
+                  color: "#A0A0A0",
+                },
+              }}
+            />
+          </div>
+
+          <div>
+            <Button
+              w={192}
+              h={56}
+              radius={0}
+              styles={{
+                root: {
+                  height: 56,
+                  minHeight: 56,
+                  background: "#0E636B",
+                  border: "1px solid #0E636B",
+                  color: "#fff",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  letterSpacing: "0.4px",
+                  textTransform: "uppercase",
+                  transition: "all .2s",
+
+                  "&:hover": {
+                    background: "#14808A",
+                    borderColor: "#14808A",
+                  },
+                },
+              }}
+              onClick={handleSearchFlight}
+            >
+              Search Flights
+            </Button>
+          </div>
         </div>
       </div>
     </div>

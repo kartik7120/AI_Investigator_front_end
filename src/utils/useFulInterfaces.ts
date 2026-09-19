@@ -6,13 +6,9 @@ export interface Flight {
     destinationSector: string;
     departureTime: string;
     arrivalTime: string;
-
-    basePrice: Price[];
-
-    currentPrice: Price | null;
-
+    currentPrice: Price[];
     baggageAllowance: BaggageAllowance[];
-
+    basePrice: Price[];
     fareType: FareType | null;
 
     status: string | null;
