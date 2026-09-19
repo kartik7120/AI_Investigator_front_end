@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { Modal, Button, Text, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
+import { calculateLowestPrice } from "../../utils/calculateLowestPrice";
 
 function getBaggageAndFees(
   baggage: BaggageAllowance[],
@@ -166,7 +167,7 @@ export default function SRPPage() {
   ]);
 
   return (
-    <div>
+    <div className="flex flex-col items-center gap-y-3.5 m-4">
       <Modal
         opened={opened}
         onClose={close}
@@ -296,7 +297,7 @@ export default function SRPPage() {
                   )}
                   departure_city=""
                   destination_city=""
-                  lowest_price={3000}
+                  lowest_price={calculateLowestPrice(val.basePrice)}
                 />
               );
             })}

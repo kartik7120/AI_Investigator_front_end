@@ -16,7 +16,6 @@ export const ConvertUTCToDateAndTime = (
   const formattedTime = date.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
     hour12: false,
   });
 
@@ -34,5 +33,5 @@ export const FlightDuration = (
 
   const hrs = duration / (1000 * 60 * 60);
 
-  return `${hrs} hr`;
+  return `${hrs.toPrecision(1)} hr`;
 };
