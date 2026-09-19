@@ -188,7 +188,7 @@ export default function SRPFareDropdown(props: SRPFareDropdownProps) {
 
       {/* Fare cards */}
       <Popover.Dropdown p="md">
-        <Group align="stretch" wrap="nowrap" gap="md">
+        <Group align="stretch" gap="md">
           {fares.map((fare) => (
             <FareOption key={fare.FareType} fare={fare} />
           ))}
@@ -215,7 +215,7 @@ function FareOption({ fare }: FareOptionProps) {
     >
       <Stack gap="md">
         <Group justify="space-between">
-          <Text fw={700}>{fare.FareType}</Text>
+          <Text fw={700}>{fare.FareType === "PREMIUM_ECONOMY" ? "PREMIUM" : fare.FareType}</Text>
 
           <Badge variant="light" color="green">
             Available
@@ -247,7 +247,7 @@ function FareOption({ fare }: FareOptionProps) {
           </Group>
         </Stack>
         {/* TODO: Use the Navigate button to take this fare and move to the pax edit page. */}
-        <Button color="dark">Select</Button>
+        <Button color="dark" className="justify-end">Select</Button>
       </Stack>
     </Card>
   );
