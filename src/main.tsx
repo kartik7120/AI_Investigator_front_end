@@ -45,6 +45,12 @@ export const router = createBrowserRouter([
     path: "/passengerEditPage",
     element: <PaxEditPage />
   },
+  {
+    path: "/add-ons",
+    element: <div>
+      Add-ons page
+    </div>
+  }
 ]);
 
 export const queryClient = new QueryClient();

@@ -68,6 +68,8 @@ export default function TripSummary({ flightIds }: TripSummaryProps) {
         })),
     });
 
+    console.log(results)
+
     const isLoading = results.some((result) => result.isLoading);
     const hasError = results.some((result) => result.isError);
 
@@ -79,7 +81,7 @@ export default function TripSummary({ flightIds }: TripSummaryProps) {
      * Calculate base fare from the current price of every flight.
      */
     const baseFare = fetchedFlights.reduce((total, flight) => {
-        return total + Number(flight.currentPrice?.currentPrice ?? 0);
+        return total + Number(flight.currentPrice ?? 0);
     }, 0);
 
     const baggageFare = 0;
@@ -124,7 +126,7 @@ export default function TripSummary({ flightIds }: TripSummaryProps) {
             shadow="sm"
             radius="md"
             withBorder
-            className="w-full max-w-md bg-white"
+            className=""
         >
             <Stack gap="md">
 
@@ -413,7 +415,7 @@ export default function TripSummary({ flightIds }: TripSummaryProps) {
                                                 ₹
                                                 {Number(
                                                     flight.currentPrice
-                                                        ?.currentPrice ?? 0
+                                                    ?? 0
                                                 ).toLocaleString(
                                                     "en-IN"
                                                 )}

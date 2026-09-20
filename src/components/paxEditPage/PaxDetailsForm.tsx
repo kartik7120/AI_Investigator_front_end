@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { useBearStore } from "../../store/store";
+import { useNavigate } from "react-router";
 
 export type Passenger = {
     title: string;
@@ -52,6 +53,8 @@ export default function PaxDetailsForm({
     );
 
     const store = useBearStore();
+
+    const navigate = useNavigate();
 
     const [passengerErrors, setPassengerErrors] = useState<
         PassengerErrors[]
@@ -188,6 +191,8 @@ export default function PaxDetailsForm({
 
         store.setContactDetails(contactDetails);
         store.setPassengers(passengers);
+
+        navigate("/add-ons")
     };
 
     return (
