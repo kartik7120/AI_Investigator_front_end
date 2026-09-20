@@ -8,7 +8,7 @@ import {
   FlightDuration,
 } from "../../utils/ConvertUTCToDateAndTime";
 import type { Fare } from "./SRPFareCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, Text, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
@@ -333,15 +333,18 @@ export default function SRPPage() {
         )}
       </div>
 
-      <div className="self-end">
-        <Button
-          variant="gradient"
-          gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
-          onClick={handleSRPNextButton}
-          disabled={!(flights.length > 0)}
-        >
-          Next
-        </Button>
+
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-white p-4">
+        <div className="flex justify-end">
+          <Button
+            variant="gradient"
+            gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+            onClick={handleSRPNextButton}
+            disabled={!(flights.length > 0)}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

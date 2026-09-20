@@ -209,11 +209,25 @@ function FareOption({ fare }: FareOptionProps) {
 
   const flights = useBearStore((store) => store.flights)
 
-  async function handleFareSelection() {
-    setFlights(
-      [...flights, fare.flight]
-    )
+  function handleFareSelection() {
+
+    console.log("inside the handle fare selection function")
+    // const updatedFlights = flights.some(
+    //   (selected) => selected.id !== fare.flight.id
+    // );
+
+    setFlights([
+      { ...fare.flight, fareType: fare.FareType }
+    ]);
+
+    // console.log(flights)
   }
+
+  const isSelected = flights.some(
+    (selected) =>
+      selected.id === fare.flight.id &&
+      selected.fareType === fare.FareType
+  );
 
   return (
     <Card
@@ -259,7 +273,14 @@ function FareOption({ fare }: FareOptionProps) {
           </Group>
         </Stack>
         {/* TODO: Use the Navigate button to take this fare and move to the pax edit page. */}
-        <Button color="dark" className="justify-end" onClick={handleFareSelection}>Select</Button>
+        <Button
+          color={isSelected ? "green" : "dark"}
+          className="justify-end"
+          onClick={handleFareSelection}
+          leftSection={isSelected ? <Check /> : null}
+        >
+          {isSelected ? "Selected" : "Select"}
+        </Button>
       </Stack>
     </Card>
   );
