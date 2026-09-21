@@ -27,7 +27,6 @@ export default function AddonCard({
     onAdd,
 }: AddonCardProps) {
 
-    console.log(addon);
     return (
         <Card
             shadow="sm"

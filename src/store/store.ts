@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { ContactDetails, Passenger } from "../components/paxEditPage/PaxDetailsForm";
 import type { Flight } from "../utils/useFulInterfaces";
+import type { SSRDto } from "../components/Add-ons/AddOnPageTabs";
 
 export interface BearState {
   isUserLoggedIn: boolean;
@@ -15,6 +16,7 @@ export interface BearState {
   ContactDetails: ContactDetails;
   numberOfPassengers: number
   flights: Flight[];
+  SSRs: SSRDto[];
 
   setIsUserLoggedIn: (isLoggedIn: boolean) => void;
   setEmail: (email: string) => void;
@@ -27,9 +29,10 @@ export interface BearState {
   setContactDetails: (contactDetails: ContactDetails) => void;
   setNumberOfPassengers: (numberOfPassengers: number) => void;
   setFlights: (flights: Flight[]) => void;
+  addSSRs: (addon: SSRDto) => void;
 }
 
-export const useBearStore = create<BearState>((set) => ({
+export const useBearStore = create<BearState>((set, get) => ({
   isUserLoggedIn: false,
   email: "",
   numberOfPassengers: 1,
@@ -45,6 +48,7 @@ export const useBearStore = create<BearState>((set) => ({
     email: "",
   },
   flights: [],
+  SSRs: [],
 
   setFlights: (flights) => set({ flights: flights }),
 
@@ -71,4 +75,12 @@ export const useBearStore = create<BearState>((set) => ({
   setNumberOfPassengers(numberOfPassengers) {
     set({ numberOfPassengers })
   },
+
+  addSSRs(addon) {
+    const currSSRs = get().SSRs;
+
+    set({
+      SSRs: [...currSSRs, addon]
+    })
+  }
 }));

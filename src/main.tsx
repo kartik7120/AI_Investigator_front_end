@@ -15,6 +15,7 @@ import StudentPromoTerms from './components/Student_promo_code_terms.tsx';
 import SRPPage from './components/SRP/SRPPage.tsx';
 import HomePage from './components/HomePage.tsx';
 import PaxEditPage from './components/paxEditPage/PaxEditPage.tsx';
+import AddOnsPage from './components/Add-ons/AddOnsPage.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -47,8 +48,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "/add-ons",
+    element: <AddOnsPage />
+  },
+  {
+    path: "/seatMap",
     element: <div>
-      Add-ons page
+      Seat Map page
     </div>
   }
 ]);

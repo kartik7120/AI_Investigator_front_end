@@ -1,12 +1,13 @@
-import { Tabs } from "@mantine/core";
+import { Button, Tabs } from "@mantine/core";
 import { useBearStore } from "../../store/store";
-import { createElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./Demo.module.css";
 import { BASE_URL } from "../../contants";
 import { useQueries } from "@tanstack/react-query";
 import AddonCard from "./AddOneCard";
 import type { Flight } from "../../utils/useFulInterfaces";
 import TripSummary from "./TripSummary";
+import { useNavigate } from "react-router";
 
 export interface SSRDto {
     id: number;
@@ -45,6 +46,10 @@ export default function AddOnPageTabs() {
     const flights = useBearStore((state) => state.flights);
 
     const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
+
+    const addSSRs = useBearStore((store) => store.addSSRs)
+
+    const navigate = useNavigate();
 
     const [value, setValue] = useState<string | null>(
         flights.length > 0 ? `flight-${flights[0].id}` : null
@@ -87,6 +92,21 @@ export default function AddOnPageTabs() {
                 <p className="text-gray-500">Loading add-ons...</p>
             </div>
         );
+    }
+
+    if (results.some((result) => result.isError)) {
+        console.log("error occured in the add-ons page")
+    }
+
+    async function handleOnAdd(addons: SSRDto) {
+        addSSRs(addons)
+    }
+
+    function handleAddonsNextButton() {
+
+        // Handle the addtions of the add-ons in the booking draft
+
+        navigate("/seatMap")
     }
 
     return (
@@ -174,6 +194,7 @@ export default function AddOnPageTabs() {
                                                     quantity: addon.quantity,
                                                     type: addon.type,
                                                 }}
+                                                onAdd={() => handleOnAdd(addon)}
                                             />
                                         ))}
                                     </div>
@@ -185,6 +206,18 @@ export default function AddOnPageTabs() {
             </div>
             <div>
                 <TripSummary flightIds={flights.map((flight) => flight.id)} />
+            </div>
+            <div className="fixed bottom-0 left-0 right-0 border-t bg-white p-4">
+                <div className="flex justify-end">
+                    <Button
+                        variant="gradient"
+                        gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+                        onClick={handleAddonsNextButton}
+                        disabled={!(flights.length > 0)}
+                    >
+                        Next
+                    </Button>
+                </div>
             </div>
         </div>
     );
