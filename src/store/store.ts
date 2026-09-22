@@ -30,6 +30,7 @@ export interface BearState {
   setNumberOfPassengers: (numberOfPassengers: number) => void;
   setFlights: (flights: Flight[]) => void;
   addSSRs: (addon: SSRDto) => void;
+  removeSSRs: (addon: SSRDto) => void;
 }
 
 export const useBearStore = create<BearState>((set, get) => ({
@@ -82,5 +83,15 @@ export const useBearStore = create<BearState>((set, get) => ({
     set({
       SSRs: [...currSSRs, addon]
     })
+  },
+  removeSSRs(addon) {
+
+    const currSSRs = get().SSRs
+
+    set(
+      {
+        SSRs: currSSRs.filter((ssr) => ssr.id !== addon.id)
+      }
+    )
   }
 }));

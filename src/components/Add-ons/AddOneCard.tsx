@@ -7,6 +7,7 @@ import {
     Badge,
     Title,
 } from "@mantine/core";
+import { useBearStore } from "../../store/store";
 
 export interface SSR {
     id: number;
@@ -20,12 +21,16 @@ export interface SSR {
 interface AddonCardProps {
     addon: SSR;
     onAdd?: (addon: SSR) => void;
+    onRemove?: (addon: SSR) => void;
 }
 
 export default function AddonCard({
     addon,
     onAdd,
+    onRemove
 }: AddonCardProps) {
+
+    const SSRs = useBearStore((store) => store.SSRs)
 
     return (
         <Card
@@ -59,16 +64,19 @@ export default function AddonCard({
 
                 {/* Availability */}
                 <Group justify="space-between">
-                    <Text size="sm">
-                        Available: <strong>{addon.quantity}</strong>
-                    </Text>
 
                     <Button
                         onClick={() => onAdd?.(addon)}
-                        disabled={addon.quantity === 0}
+                        disabled={addon.quantity === 0 || SSRs.some((ssr) => ssr.id === addon.id)}
                     >
                         Add
                     </Button>
+
+                    {SSRs.some((ssr) => ssr.id === addon.id) && (
+                        <Button onClick={() => onRemove?.(addon)}>
+                            Remove
+                        </Button>
+                    )}
                 </Group>
             </Stack>
         </Card>

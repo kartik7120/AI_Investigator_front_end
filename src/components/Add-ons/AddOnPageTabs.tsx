@@ -48,6 +48,7 @@ export default function AddOnPageTabs() {
     const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
 
     const addSSRs = useBearStore((store) => store.addSSRs)
+    const removeSSRs = useBearStore((store) => store.removeSSRs)
 
     const navigate = useNavigate();
 
@@ -102,15 +103,20 @@ export default function AddOnPageTabs() {
         addSSRs(addons)
     }
 
+    async function handleOnRemove(addons: SSRDto) {
+        removeSSRs(addons)
+    }
+
     function handleAddonsNextButton() {
 
         // Handle the addtions of the add-ons in the booking draft
 
+        
         navigate("/seatMap")
     }
 
     return (
-        <div className="w-full h-full flex flex-row items-center justify-between">
+        <div className="w-full h-full flex flex-row items-center justify-between m-4">
             <div className="flex-1 self-start">
                 <Tabs
                     variant="unstyled"
@@ -195,6 +201,7 @@ export default function AddOnPageTabs() {
                                                     type: addon.type,
                                                 }}
                                                 onAdd={() => handleOnAdd(addon)}
+                                                onRemove={() => handleOnRemove(addon)}
                                             />
                                         ))}
                                     </div>
