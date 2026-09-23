@@ -25,16 +25,16 @@ export default function SeatComp({
     const isOccupied = seat.status === "OCCUPIED";
     const isBlocked = seat.status === "BLOCKED";
 
-    const seats = useBearStore((store) => store.seats)
-    const addSeat = useBearStore((store) => store.addSeat)
-    const removeSeat = useBearStore((store) => store.removeSeat)
+    const flights = useBearStore((store) => store.flights)
 
-    const isSelected = seats.some((s) => s.id === seat.id)
+    const seats = useBearStore((store) => store.seats)
+
+    const isSameFareType = flights.every((flight) => flight.fareType === seat.seatClass)
 
     return (
         <Button
             variant={selected ? "filled" : "light"}
-            disabled={!isAvailable}
+            disabled={!isAvailable && isSameFareType}
             onClick={() => onSelect?.(seat)}
             className={`
     h - 10 w - 12 p - 0

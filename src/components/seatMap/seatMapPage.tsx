@@ -8,7 +8,9 @@ export default function SeatMapPage() {
 
     return (
         <div className="flex flex-row items-center justify-between m-4">
-            <SeatMap />
+            <div className="flex-1">
+                <SeatMap />
+            </div>
             <div className="self-start">
                 <TripSummary flightIds={flights.map((flight) => flight.id)} />
             </div>

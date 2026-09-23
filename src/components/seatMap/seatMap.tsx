@@ -5,6 +5,15 @@ import { Alert, Button, Loader, Text } from '@mantine/core';
 import { CircleAlert } from "lucide-react";
 import { BASE_URL } from '../../contants';
 import React from 'react';
+import { useNavigate } from 'react-router';
+
+/**
+ * Problems;
+ * The seat button color when not selected is not green or teal
+ * We should only allow seat selection based on the number of passengers in the booking
+ * Add a navbar at the top to navigtate to the home page
+ * Only those seats should be visible that are available in that fare type, rest should appear blocked
+ */
 
 async function getSeatMap(flightID: number) {
 
@@ -19,6 +28,9 @@ export default function SeatMap() {
     const seats = useBearStore((store) => store.seats);
     const onAddSeat = useBearStore((store) => store.addSeat);
     const onRemoveSeat = useBearStore((store) => store.removeSeat);
+
+    const passengerCount = useBearStore((store) => store.numberOfPassengers)
+    const navigate = useNavigate();
 
     const flightId = flights[0]?.id;
 
@@ -106,6 +118,10 @@ export default function SeatMap() {
             (selectedSeat) => selectedSeat.id === seat.id
         );
 
+        if (seats.length >= passengerCount) {
+            return;
+        }
+
         if (isSelected) {
             onRemoveSeat(seat);
         } else {
@@ -116,6 +132,8 @@ export default function SeatMap() {
     const handleSeatMap = () => {
 
         console.log("Navigate to payment page")
+
+        navigate("/payment")
     }
 
     return (
@@ -139,7 +157,7 @@ export default function SeatMap() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 rounded bg-teal-700" />
+                    <div className="h-4 w-4 rounded bg-blue-500" />
                     <span>Selected</span>
                 </div>
 
@@ -151,41 +169,6 @@ export default function SeatMap() {
                 <div className="flex items-center gap-2">
                     <div className="h-4 w-4 rounded bg-red-100" />
                     <span>Blocked</span>
-                </div>
-            </div>
-
-            {/* Aircraft */}
-            <div className="rounded-3xl border bg-white px-8 py-10 shadow-sm">
-                {/* Cockpit */}
-                <div className="mb-8 text-center">
-                    <Text size="sm" fw={600} c="dimmed">
-                        FRONT
-                    </Text>
-                </div>
-
-                {/* Seat map */}
-                <div className="flex flex-col gap-2">
-                    {data.map((seat) => {
-                        const isSelected = seats.some(
-                            (selectedSeat) => selectedSeat.id === seat.id
-                        );
-
-                        return (
-                            <SeatComp
-                                key={seat.id}
-                                seat={seat}
-                                selected={isSelected}
-                                onSelect={handleSeatSelection}
-                            />
-                        );
-                    })}
-                </div>
-
-                {/* Rear */}
-                <div className="mt-8 text-center">
-                    <Text size="sm" fw={600} c="dimmed">
-                        REAR
-                    </Text>
                 </div>
             </div>
 

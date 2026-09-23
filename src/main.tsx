@@ -54,6 +54,12 @@ export const router = createBrowserRouter([
   {
     path: "/seatMap",
     element: <SeatMapPage />
+  },
+  {
+    path: "/payment",
+    element: <div>
+      Payment page
+    </div>
   }
 ]);
 
