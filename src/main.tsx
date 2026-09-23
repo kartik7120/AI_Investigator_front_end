@@ -16,6 +16,7 @@ import SRPPage from './components/SRP/SRPPage.tsx';
 import HomePage from './components/HomePage.tsx';
 import PaxEditPage from './components/paxEditPage/PaxEditPage.tsx';
 import AddOnsPage from './components/Add-ons/AddOnsPage.tsx';
+import SeatMapPage from './components/seatMap/seatMapPage.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -52,9 +53,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/seatMap",
-    element: <div>
-      Seat Map page
-    </div>
+    element: <SeatMapPage />
   }
 ]);
 

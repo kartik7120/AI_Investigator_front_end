@@ -111,7 +111,7 @@ export default function AddOnPageTabs() {
 
         // Handle the addtions of the add-ons in the booking draft
 
-        
+
         navigate("/seatMap")
     }
 
@@ -220,7 +220,6 @@ export default function AddOnPageTabs() {
                         variant="gradient"
                         gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
                         onClick={handleAddonsNextButton}
-                        disabled={!(flights.length > 0)}
                     >
                         Next
                     </Button>

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { ContactDetails, Passenger } from "../components/paxEditPage/PaxDetailsForm";
 import type { Flight } from "../utils/useFulInterfaces";
 import type { SSRDto } from "../components/Add-ons/AddOnPageTabs";
+import type { Seat } from "../components/seatMap/Seat";
 
 export interface BearState {
   isUserLoggedIn: boolean;
@@ -17,6 +18,7 @@ export interface BearState {
   numberOfPassengers: number
   flights: Flight[];
   SSRs: SSRDto[];
+  seats: Seat[];
 
   setIsUserLoggedIn: (isLoggedIn: boolean) => void;
   setEmail: (email: string) => void;
@@ -31,6 +33,8 @@ export interface BearState {
   setFlights: (flights: Flight[]) => void;
   addSSRs: (addon: SSRDto) => void;
   removeSSRs: (addon: SSRDto) => void;
+  addSeat: (seat: Seat) => void;
+  removeSeat: (seat: Seat) => void;
 }
 
 export const useBearStore = create<BearState>((set, get) => ({
@@ -50,6 +54,25 @@ export const useBearStore = create<BearState>((set, get) => ({
   },
   flights: [],
   SSRs: [],
+  seats: [],
+
+  addSeat(seat: Seat) {
+    const s = get().seats;
+
+    set({ seats: [...s, seat] })
+  },
+
+  removeSeat(seat: Seat) {
+    const s = get().seats;
+
+    set({
+      seats: s.filter((st) => {
+        if (st.id !== seat.id) {
+          return true
+        }
+      })
+    })
+  },
 
   setFlights: (flights) => set({ flights: flights }),
 
