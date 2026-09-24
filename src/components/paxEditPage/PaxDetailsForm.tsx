@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { useBearStore } from "../../store/store";
 import { useNavigate } from "react-router";
+import NavbarSecond from "../navbarSecond";
 
 export type Passenger = {
     title: string;
@@ -196,52 +197,21 @@ export default function PaxDetailsForm({
     };
 
     return (
-        <div className="min-h-screen bg-[#101213] px-4 py-8 text-white">
-            <div className="mx-auto max-w-[770px]">
+        <div className="flex flex-col">
+            <NavbarSecond />
+            <div className="min-h-screen bg-[#101213] px-4 py-8 text-white">
+                <div className="mx-auto max-w-[770px]">
 
-                {/* Page Title */}
-                <Title
-                    order={1}
-                    className="mb-6 text-3xl font-normal"
-                >
-                    Complete your passenger details
-                </Title>
-
-                {/* Important Information */}
-                <Card
-                    radius="sm"
-                    padding="lg"
-                    className="mb-4 border-0 bg-[#17191a]"
-                >
-                    <Text
-                        size="sm"
-                        fw={500}
-                        className="mb-4"
+                    {/* Page Title */}
+                    <Title
+                        order={1}
+                        className="mb-6 text-3xl font-normal"
                     >
-                        Important information
-                    </Text>
+                        Complete your passenger details
+                    </Title>
 
-                    <Divider className="mb-5 border-[#252829]" />
-
-                    <Stack gap="md">
-                        <Text size="xs" c="dimmed">
-                            1. Added flexibility in case plans change...
-                        </Text>
-
-                        <Text size="xs" c="dimmed">
-                            2. Travel to India: All passengers travelling
-                            to India on international flights are required
-                            to complete the Air Suvidha Self Declaration
-                            Form within 24 hours before departure to avoid
-                            delays during boarding or arrival...
-                        </Text>
-                    </Stack>
-                </Card>
-
-                {/* Passenger Details */}
-                {passengers.map((passenger, index) => (
+                    {/* Important Information */}
                     <Card
-                        key={index}
                         radius="sm"
                         padding="lg"
                         className="mb-4 border-0 bg-[#17191a]"
@@ -249,197 +219,232 @@ export default function PaxDetailsForm({
                         <Text
                             size="sm"
                             fw={500}
-                            className="mb-3"
+                            className="mb-4"
                         >
-                            Passenger {index + 1} (Adult)
+                            Important information
                         </Text>
 
-                        <Text
-                            size="xs"
-                            c="dimmed"
-                            className="mb-5"
-                        >
-                            Names must exactly match passport details
-                            and should be entered using English
-                            characters only. They can't be changed after
-                            your booking is complete.
-                        </Text>
+                        <Divider className="mb-5 border-[#252829]" />
 
                         <Stack gap="md">
+                            <Text size="xs" c="dimmed">
+                                1. Added flexibility in case plans change...
+                            </Text>
 
-                            {/* Title */}
+                            <Text size="xs" c="dimmed">
+                                2. Travel to India: All passengers travelling
+                                to India on international flights are required
+                                to complete the Air Suvidha Self Declaration
+                                Form within 24 hours before departure to avoid
+                                delays during boarding or arrival...
+                            </Text>
+                        </Stack>
+                    </Card>
+
+                    {/* Passenger Details */}
+                    {passengers.map((passenger, index) => (
+                        <Card
+                            key={index}
+                            radius="sm"
+                            padding="lg"
+                            className="mb-4 border-0 bg-[#17191a]"
+                        >
+                            <Text
+                                size="sm"
+                                fw={500}
+                                className="mb-3"
+                            >
+                                Passenger {index + 1} (Adult)
+                            </Text>
+
+                            <Text
+                                size="xs"
+                                c="dimmed"
+                                className="mb-5"
+                            >
+                                Names must exactly match passport details
+                                and should be entered using English
+                                characters only. They can't be changed after
+                                your booking is complete.
+                            </Text>
+
+                            <Stack gap="md">
+
+                                {/* Title */}
+                                <Select
+                                    label="Title"
+                                    placeholder="Select title"
+                                    value={passenger.title}
+                                    onChange={(value) =>
+                                        updatePassenger(
+                                            index,
+                                            "title",
+                                            value ?? ""
+                                        )
+                                    }
+                                    error={
+                                        passengerErrors[index]?.title
+                                    }
+                                    data={[
+                                        {
+                                            value: "Mr",
+                                            label: "Mr",
+                                        },
+                                        {
+                                            value: "Mrs",
+                                            label: "Mrs",
+                                        },
+                                        {
+                                            value: "Ms",
+                                            label: "Ms",
+                                        },
+                                        {
+                                            value: "Miss",
+                                            label: "Miss",
+                                        },
+                                    ]}
+                                    className="max-w-[225px]"
+                                />
+
+                                {/* Name */}
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                                    <TextInput
+                                        label="First name"
+                                        placeholder="First name"
+                                        value={passenger.firstName}
+                                        error={
+                                            passengerErrors[index]
+                                                ?.firstName
+                                        }
+                                        onChange={(event) =>
+                                            updatePassenger(
+                                                index,
+                                                "firstName",
+                                                event.currentTarget.value
+                                            )
+                                        }
+                                    />
+
+                                    <TextInput
+                                        label="Last name"
+                                        placeholder="Last name"
+                                        value={passenger.lastName}
+                                        error={
+                                            passengerErrors[index]
+                                                ?.lastName
+                                        }
+                                        onChange={(event) =>
+                                            updatePassenger(
+                                                index,
+                                                "lastName",
+                                                event.currentTarget.value
+                                            )
+                                        }
+                                    />
+
+                                </div>
+                            </Stack>
+                        </Card>
+                    ))}
+
+                    {/* Contact Details */}
+                    <Card
+                        radius="sm"
+                        padding="lg"
+                        className="mb-4 border-0 bg-[#17191a]"
+                    >
+                        <Text
+                            size="sm"
+                            fw={500}
+                            className="mb-5"
+                        >
+                            Contact details
+                        </Text>
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
                             <Select
-                                label="Title"
-                                placeholder="Select title"
-                                value={passenger.title}
+                                label="Contact person"
+                                placeholder="Select contact person"
+                                value={contactDetails.contactPerson}
+                                error={contactErrors.contactPerson}
                                 onChange={(value) =>
-                                    updatePassenger(
-                                        index,
-                                        "title",
+                                    updateContactDetails(
+                                        "contactPerson",
                                         value ?? ""
                                     )
                                 }
-                                error={
-                                    passengerErrors[index]?.title
-                                }
-                                data={[
-                                    {
-                                        value: "Mr",
-                                        label: "Mr",
-                                    },
-                                    {
-                                        value: "Mrs",
-                                        label: "Mrs",
-                                    },
-                                    {
-                                        value: "Ms",
-                                        label: "Ms",
-                                    },
-                                    {
-                                        value: "Miss",
-                                        label: "Miss",
-                                    },
-                                ]}
-                                className="max-w-[225px]"
+                                data={passengers.map((_, index) => ({
+                                    value: index.toString(),
+                                    label: `Passenger ${index + 1}`,
+                                }))}
                             />
 
-                            {/* Name */}
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <TextInput
+                                label="Mobile number"
+                                placeholder="Mobile number"
+                                value={contactDetails.mobileNumber}
+                                error={contactErrors.mobileNumber}
+                                onChange={(event) =>
+                                    updateContactDetails(
+                                        "mobileNumber",
+                                        event.currentTarget.value
+                                    )
+                                }
+                            />
 
-                                <TextInput
-                                    label="First name"
-                                    placeholder="First name"
-                                    value={passenger.firstName}
-                                    error={
-                                        passengerErrors[index]
-                                            ?.firstName
-                                    }
-                                    onChange={(event) =>
-                                        updatePassenger(
-                                            index,
-                                            "firstName",
-                                            event.currentTarget.value
-                                        )
-                                    }
-                                />
+                            <TextInput
+                                label="Email address"
+                                placeholder="Email address"
+                                value={contactDetails.email}
+                                error={contactErrors.email}
+                                onChange={(event) =>
+                                    updateContactDetails(
+                                        "email",
+                                        event.currentTarget.value
+                                    )
+                                }
+                            />
 
-                                <TextInput
-                                    label="Last name"
-                                    placeholder="Last name"
-                                    value={passenger.lastName}
-                                    error={
-                                        passengerErrors[index]
-                                            ?.lastName
-                                    }
-                                    onChange={(event) =>
-                                        updatePassenger(
-                                            index,
-                                            "lastName",
-                                            event.currentTarget.value
-                                        )
-                                    }
-                                />
-
-                            </div>
-                        </Stack>
+                        </div>
                     </Card>
-                ))}
 
-                {/* Contact Details */}
-                <Card
-                    radius="sm"
-                    padding="lg"
-                    className="mb-4 border-0 bg-[#17191a]"
-                >
-                    <Text
-                        size="sm"
-                        fw={500}
-                        className="mb-5"
+                    {/* Confirmation */}
+                    <Card
+                        radius="sm"
+                        padding="lg"
+                        className="mb-5 border-0 bg-[#17191a]"
                     >
-                        Contact details
-                    </Text>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-
-                        <Select
-                            label="Contact person"
-                            placeholder="Select contact person"
-                            value={contactDetails.contactPerson}
-                            error={contactErrors.contactPerson}
-                            onChange={(value) =>
-                                updateContactDetails(
-                                    "contactPerson",
-                                    value ?? ""
-                                )
-                            }
-                            data={passengers.map((_, index) => ({
-                                value: index.toString(),
-                                label: `Passenger ${index + 1}`,
-                            }))}
-                        />
-
-                        <TextInput
-                            label="Mobile number"
-                            placeholder="Mobile number"
-                            value={contactDetails.mobileNumber}
-                            error={contactErrors.mobileNumber}
+                        <Checkbox
+                            checked={confirmed}
                             onChange={(event) =>
-                                updateContactDetails(
-                                    "mobileNumber",
-                                    event.currentTarget.value
+                                setConfirmed(
+                                    event.currentTarget.checked
                                 )
                             }
-                        />
-
-                        <TextInput
-                            label="Email address"
-                            placeholder="Email address"
-                            value={contactDetails.email}
-                            error={contactErrors.email}
-                            onChange={(event) =>
-                                updateContactDetails(
-                                    "email",
-                                    event.currentTarget.value
-                                )
+                            label={
+                                <Text size="sm">
+                                    I confirm that all the passenger details
+                                    and conditions mentioned above are correct.
+                                </Text>
                             }
                         />
+                    </Card>
 
-                    </div>
-                </Card>
+                    {/* Save */}
+                    <Button
+                        fullWidth
+                        size="md"
+                        disabled={!confirmed}
+                        onClick={handleSave}
+                    >
+                        Save Passenger Details
+                    </Button>
 
-                {/* Confirmation */}
-                <Card
-                    radius="sm"
-                    padding="lg"
-                    className="mb-5 border-0 bg-[#17191a]"
-                >
-                    <Checkbox
-                        checked={confirmed}
-                        onChange={(event) =>
-                            setConfirmed(
-                                event.currentTarget.checked
-                            )
-                        }
-                        label={
-                            <Text size="sm">
-                                I confirm that all the passenger details
-                                and conditions mentioned above are correct.
-                            </Text>
-                        }
-                    />
-                </Card>
-
-                {/* Save */}
-                <Button
-                    fullWidth
-                    size="md"
-                    disabled={!confirmed}
-                    onClick={handleSave}
-                >
-                    Save Passenger Details
-                </Button>
-
+                </div>
             </div>
         </div>
+
     );
 }
