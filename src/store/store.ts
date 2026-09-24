@@ -7,6 +7,7 @@ import type { Seat } from "../components/seatMap/Seat";
 export interface BearState {
   isUserLoggedIn: boolean;
   email: string;
+  sessionID: string;
 
   destination_sector: string;
   departure_sector: string;
@@ -35,6 +36,7 @@ export interface BearState {
   removeSSRs: (addon: SSRDto) => void;
   addSeat: (seat: Seat) => void;
   removeSeat: (seat: Seat) => void;
+  setSessionID: (sessionID: string) => void;
 }
 
 export const useBearStore = create<BearState>((set, get) => ({
@@ -55,6 +57,13 @@ export const useBearStore = create<BearState>((set, get) => ({
   flights: [],
   SSRs: [],
   seats: [],
+  sessionID: "",
+
+  setSessionID(sessionID: string) {
+    set({
+      sessionID
+    })
+  },
 
   addSeat(seat: Seat) {
     const s = get().seats;

@@ -1,5 +1,4 @@
-import { ActionIcon, Paper, Text, Title } from "@mantine/core";
-import { Plane } from "lucide-react";
+import { Paper, Text, Title } from "@mantine/core";
 
 export default function StatsSection() {
     const stats = [

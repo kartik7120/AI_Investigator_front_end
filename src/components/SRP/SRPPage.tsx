@@ -17,6 +17,7 @@ import type {
   BaggageAllowanceType,
   Flight,
 } from "../../utils/useFulInterfaces";
+import NavbarSecond from "../navbarSecond";
 
 function getBaggageAndFees(
   baggage: BaggageAllowance[],
@@ -182,6 +183,7 @@ export default function SRPPage() {
 
   return (
     <div className="flex flex-col items-center gap-y-3.5 m-4">
+      <NavbarSecond />
       <Modal
         opened={opened}
         onClose={close}
