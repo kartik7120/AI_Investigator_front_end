@@ -1,7 +1,7 @@
 import { BASE_URL } from "../../contants";
 import { useBearStore } from "../../store/store";
 import SRPPageBookingWidgetModal from "./SRPPageBookingWidgetModal";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import SRPFareDropdown from "./SRPFareDropdown";
 import {
   ConvertUTCToDateAndTime,
@@ -18,6 +18,20 @@ import type {
   Flight,
 } from "../../utils/useFulInterfaces";
 import NavbarSecond from "../navbarSecond";
+
+export type BookingDraftFlightRequest = {
+  flightId: number;
+  fareType: FareType;
+  passengerCount: number;
+};
+
+export const FareType = {
+  ECONOMY: "ECONOMY",
+  PREMIUM_ECONOMY: "PREMIUM_ECONOMY",
+  BUSINESS: "BUSINESS",
+} as const;
+
+export type FareType = (typeof FareType)[keyof typeof FareType];
 
 function getBaggageAndFees(
   baggage: BaggageAllowance[],
@@ -50,6 +64,29 @@ function getBaggageAndFees(
   }
 
   return fares;
+}
+
+async function createBookingDraft() {
+
+  const resp = await fetch(`${BASE_URL}/generateSessionID`, {
+    method: "POST",
+  })
+
+  const sessionID = await resp.json();
+
+  return sessionID;
+}
+
+async function createBookingFlightDraft(sessionID: string, bookingDraftFlightRequest: BookingDraftFlightRequest) {
+
+  const resp = await fetch(`${BASE_URL}/bookingDraft/${sessionID}/flights`, {
+    method: "POST",
+    body: JSON.stringify({
+      ...bookingDraftFlightRequest
+    })
+  })
+
+  return resp.json();
 }
 
 export interface Price {
@@ -110,6 +147,47 @@ export default function SRPPage() {
 
   const navigate = useNavigate();
 
+  const setSessionID = useBearStore((store) => store.setSessionID)
+  const sessionID = useBearStore((store) => store.sessionID)
+
+  const flights = useBearStore((store) => store.flights)
+
+  const numberOfPassengers = useBearStore((store) => store.numberOfPassengers)
+
+  const { error: errorCreatingSession, isError: isErrorCreatingSession, mutate } = useMutation(
+    {
+      mutationFn: createBookingDraft,
+      onError(error) {
+        console.log(`error while creating session : ${error}`)
+      },
+      onSuccess(data) {
+        setSessionID(data)
+        console.log("session created successfully: " + data)
+      },
+    }
+  )
+
+  const { error: errorCreatingBookingFlightDraft, isError: isErrorCreationgBookingFlightDraft, mutate: creatingFlightDraftMutate } = useMutation(
+    {
+      mutationFn: () => createBookingFlightDraft(sessionID, {
+        flightId: flights[0].id,
+        fareType: flights[0].fareType as FareType,
+        passengerCount: numberOfPassengers,
+      }),
+      onError(error) {
+        console.log(`error while creating booking draft flight : ${error}`)
+      },
+      onSuccess(data, variables, onMutateResult, context) {
+        console.log(`success while creating booking draft : ${data}`)
+      },
+    }
+  )
+
+
+  useEffect(() => {
+    mutate()
+  }, [])
+
   const DepartureSector = useBearStore(
     (store) => store.departure_sector,
   );
@@ -131,6 +209,16 @@ export default function SRPPage() {
   );
 
   const [opened, { open, close }] = useDisclosure(false);
+
+  if (isErrorCreatingSession) {
+    open();
+    console.log(`error while creating session on SRP page : ${errorCreatingSession}`)
+  }
+
+  if (isErrorCreationgBookingFlightDraft) {
+    open();
+  }
+
 
   const {
     data: searchFlightData,
@@ -175,9 +263,8 @@ export default function SRPPage() {
     DestinationDate,
   ]);
 
-  const flights = useBearStore((store) => store.flights)
-
   const handleSRPNextButton = async () => {
+    creatingFlightDraftMutate()
     navigate("/passengerEditPage")
   }
 

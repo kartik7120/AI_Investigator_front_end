@@ -9,17 +9,6 @@ import '@mantine/notifications/styles.css';
 // ‼️ import carousel styles after core package styles
 import '@mantine/carousel/styles.css';
 
-async function createBookingDraft() {
-
-    const resp = await fetch("/generateSessionID", {
-        method: "POST",
-    })
-
-    const sessionID = await resp.json();
-
-    return sessionID;
-}
-
 export default function HomePage() {
 
     return (
