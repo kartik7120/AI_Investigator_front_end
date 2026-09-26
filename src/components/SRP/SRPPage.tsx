@@ -17,7 +17,7 @@ import type {
   BaggageAllowanceType,
   Flight,
 } from "../../utils/useFulInterfaces";
-import NavbarSecond from "../navbarSecond";
+import NavbarSecond from "../NavbarSecond";
 
 export type BookingDraftFlightRequest = {
   flightId: number;

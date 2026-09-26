@@ -1,4 +1,4 @@
-import NavbarSecond from '../navbarSecond'
+import NavbarSecond from '../NavbarSecond'
 import AddOnPageTabs from './AddOnPageTabs'
 
 export default function AddOnsPage() {

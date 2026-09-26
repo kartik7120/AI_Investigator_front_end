@@ -8,6 +8,7 @@ export interface Seat {
     status: "AVAILABLE" | "OCCUPIED" | "BLOCKED";
     seatRow: number;
     seatColumn: number;
+    price: number
 }
 
 export interface SeatProps {

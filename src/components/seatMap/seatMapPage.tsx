@@ -1,6 +1,6 @@
 import { useBearStore } from "../../store/store"
 import TripSummary from "../Add-ons/TripSummary"
-import NavbarSecond from "../navbarSecond"
+import NavbarSecond from "../NavbarSecond"
 import SeatMap from "./seatMap"
 
 export default function SeatMapPage() {

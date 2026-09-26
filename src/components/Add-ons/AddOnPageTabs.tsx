@@ -3,8 +3,8 @@ import { useBearStore } from "../../store/store";
 import { useEffect, useState } from "react";
 import classes from "./Demo.module.css";
 import { BASE_URL } from "../../contants";
-import { useQueries } from "@tanstack/react-query";
-import AddonCard from "./AddOneCard";
+import { useMutation, useQueries } from "@tanstack/react-query";
+import AddonCard, { type SSR } from "./AddOneCard";
 import type { Flight } from "../../utils/useFulInterfaces";
 import TripSummary from "./TripSummary";
 import { useNavigate } from "react-router";
@@ -16,6 +16,12 @@ export interface SSRDto {
     fareType: string;
     price: number;
     flightID: number;
+}
+
+export interface BookingDraftSSRRequest {
+    draftFlightId: number;
+    ssrId: number;
+    quantity: number;
 }
 
 async function fetchFlightSSR(
@@ -40,6 +46,27 @@ async function fetchFlightSSR(
     }
 
     return resp.json();
+}
+
+async function setBookingDraftSSRs(
+    sessionID: string,
+    SSRs: SSRDto[]
+) {
+
+    const resp = await fetch(`${BASE_URL}/bookingDraft/${sessionID}/ssrs`, {
+        method: "POST",
+        body: JSON.stringify({
+            requests: SSRs.map((ssr) => ({
+                ssrID: ssr.id,
+                draftFlightId: ssr.flightID,
+                quantity: ssr.quantity
+            }))
+        })
+    })
+
+    if (resp.ok === false) {
+        throw new Error("error setting booking draft SSR")
+    }
 }
 
 export default function AddOnPageTabs() {
@@ -107,12 +134,28 @@ export default function AddOnPageTabs() {
         removeSSRs(addons)
     }
 
+    const sessionID = useBearStore((store) => store.sessionID)
+
+    const SSRs = useBearStore((store) => store.SSRs)
+
+    const { isError, error, isPending, isSuccess, mutate } = useMutation({
+        mutationFn: () => setBookingDraftSSRs(sessionID, SSRs),
+        onError(error, variables, onMutateResult, context) {
+            console.log(`error while creating booking draft SSR: ${error}`)
+        },
+        onSuccess(data, variables, onMutateResult, context) {
+            console.log(`success able to creat Booking Draft SSR1`)
+        },
+    })
+
     function handleAddonsNextButton() {
 
         // Handle the addtions of the add-ons in the booking draft
 
+        mutate()
 
-        navigate("/seatMap")
+        if (isSuccess)
+            navigate("/seatMap")
     }
 
     return (
@@ -220,6 +263,7 @@ export default function AddOnPageTabs() {
                         variant="gradient"
                         gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
                         onClick={handleAddonsNextButton}
+                        loading={isPending}
                     >
                         Next
                     </Button>

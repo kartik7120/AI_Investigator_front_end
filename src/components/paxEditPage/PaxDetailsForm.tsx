@@ -12,7 +12,36 @@ import {
 import { useState } from "react";
 import { useBearStore } from "../../store/store";
 import { useNavigate } from "react-router";
-import NavbarSecond from "../navbarSecond";
+import NavbarSecond from "../NavbarSecond";
+import { BASE_URL } from "../../contants";
+import { useMutation } from "@tanstack/react-query";
+
+async function setPassengerBookingDraft(
+    sessionID: string, passengers: Passenger[], contactDetails: ContactDetails
+) {
+
+    const resp = await fetch(`${BASE_URL}/bookingDraft/${sessionID}/passengers`, {
+        method: "POST",
+        body: JSON.stringify({
+            requests: [
+                passengers.map((passenger) => (
+                    {
+                        firstName: passenger.firstName,
+                        lastname: passenger.lastName,
+                        email: contactDetails.email,
+                        phoneNumber: contactDetails.mobileNumber,
+                        gender: passenger.title === "Mr" ? "MALE" : "FEMALE"
+                    }
+                ))
+            ]
+        })
+    })
+
+    if (resp.ok === false) {
+        throw new Error("error while creating passenger draft")
+    }
+}
+
 
 export type Passenger = {
     title: string;
@@ -52,6 +81,22 @@ export default function PaxDetailsForm({
             lastName: "",
         }))
     );
+
+    const sessionID = useBearStore((store) => store.sessionID)
+    const passengersFromStore = useBearStore((store) => store.passengers)
+    const contactDetailsFromStore = useBearStore((store) => store.ContactDetails)
+
+    const { mutate, isError, error, isPending, isSuccess } = useMutation(
+        {
+            mutationFn: () => setPassengerBookingDraft(sessionID, passengersFromStore, contactDetailsFromStore),
+            onError(error, variables, onMutateResult, context) {
+                console.log(`error while crearting passenger draft : ${error}`)
+            },
+            onSuccess(data, variables, onMutateResult, context) {
+                console.log(`success while creating passenger draft `)
+            },
+        }
+    )
 
     const store = useBearStore();
 
@@ -193,8 +238,15 @@ export default function PaxDetailsForm({
         store.setContactDetails(contactDetails);
         store.setPassengers(passengers);
 
-        navigate("/add-ons")
+        mutate()
+
+        if (isSuccess)
+            navigate("/add-ons")
     };
+
+    if (isError) {
+        console.log(error)
+    }
 
     return (
         <div className="flex flex-col">
@@ -438,6 +490,7 @@ export default function PaxDetailsForm({
                         size="md"
                         disabled={!confirmed}
                         onClick={handleSave}
+                        loading={isPending}
                     >
                         Save Passenger Details
                     </Button>

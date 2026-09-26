@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useBearStore } from '../../store/store'
-import SeatComp, { type Seat } from './Seat';
+import SeatComp, { type Seat, type SeatProps } from './Seat';
 import { Alert, Button, Loader, Text } from '@mantine/core';
 import { CircleAlert } from "lucide-react";
 import { BASE_URL } from '../../contants';
@@ -15,11 +15,40 @@ import { useNavigate } from 'react-router';
  * Only those seats should be visible that are available in that fare type, rest should appear blocked
  */
 
+export interface BookingDraftSeatDto {
+    seatId: number;
+    seatNumber: string;
+    price: number;
+    draftFlightId: number;
+}
+
 async function getSeatMap(flightID: number) {
 
     const resp = await fetch(`${BASE_URL}/getSeatMap/${flightID}`)
 
     return resp.json();
+}
+
+async function setBookingDraftSeat(
+    sessionID: string,
+    seats: Seat[],
+    draftFlightId: number
+) {
+    const resp = await fetch(`${BASE_URL}/bookingDraft/${sessionID}/seats`, {
+        method: "POST",
+        body: JSON.stringify({
+            requests: seats.map((seat) => ({
+                seatId: seat.id,
+                seatNumber: seat.seatNumber,
+                price: seat.price,
+                draftFlightId
+            }))
+        })
+    })
+
+    if (resp.ok === false) {
+        throw new Error("error while creating Booking Draft Seat")
+    }
 }
 
 export default function SeatMap() {
@@ -28,6 +57,7 @@ export default function SeatMap() {
     const seats = useBearStore((store) => store.seats);
     const onAddSeat = useBearStore((store) => store.addSeat);
     const onRemoveSeat = useBearStore((store) => store.removeSeat);
+    const sessionID = useBearStore((store) => store.sessionID)
 
     const passengerCount = useBearStore((store) => store.numberOfPassengers)
     const navigate = useNavigate();
@@ -129,11 +159,24 @@ export default function SeatMap() {
         }
     };
 
+    const { mutate, isPending, isError: isErrorBookingDraftSeat, error: errorBookingDraftSeat, isSuccess } = useMutation({
+        mutationFn: () => setBookingDraftSeat(sessionID, seats, flightId),
+        onError(error, variables, onMutateResult, context) {
+            console.log(`error while creating booking draft Seat`)
+        },
+        onSuccess(data, variables, onMutateResult, context) {
+            console.log(`success while creating booking draft Seat`)
+        },
+    })
+
     const handleSeatMap = () => {
 
         console.log("Navigate to payment page")
 
-        navigate("/payment")
+        mutate()
+
+        if (isSuccess)
+            navigate("/payment")
     }
 
     return (
@@ -241,6 +284,7 @@ export default function SeatMap() {
                         variant="gradient"
                         gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
                         onClick={handleSeatMap}
+                        loading={isPending}
                     >
                         Next
                     </Button>
