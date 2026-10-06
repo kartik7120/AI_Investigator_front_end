@@ -17,6 +17,7 @@ import HomePage from './components/HomePage.tsx';
 import PaxEditPage from './components/paxEditPage/PaxEditPage.tsx';
 import AddOnsPage from './components/Add-ons/AddOnsPage.tsx';
 import SeatMapPage from './components/seatMap/seatMapPage.tsx';
+import ManageBooking from './components/manage/ManageBookingPage.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/manage",
-    element: <ManageIndex />,
+    element: <ManageBooking />,
   },
   {
     path: "/singapore_promo",
